@@ -22,5 +22,5 @@ Este é um script Python para criar vídeos automáticos com histórias do subre
 1. Clone o repositório:
 
    ```bash
-   git clone https://github.com/seu-usuario/aita-video-maker.git
-   cd aita-video-maker
+   git clone https://github.com/rammyres/aita_auto.git
+   cd aita_auto
