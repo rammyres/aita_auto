@@ -1,0 +1,5 @@
+moviepy==1.0.3
+praw==7.7.1
+protobuf==5.26.1
+pytube==15.0.0
+opencv-py==4.9.0.80
