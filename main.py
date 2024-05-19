@@ -1,6 +1,7 @@
 from lib.reddit_utils import *
 from lib.youtube_utils import download_youtube_video
 from lib.video_utils import *
+from lib.subtitles_utils import *
 
 import moviepy.editor as mp
 
@@ -45,6 +46,14 @@ def select_story():
 
 # Função principal
 def main():
+# Verifica se o diretório temporário existe
+    if not os.path.exists('tmp'):
+        os.mkdir('tmp')
+
+# Verifica se o diretório de saida existe
+    if not os.path.exists('output'):
+        os.mkdir('output')
+
     selected_story = select_story()
     if not selected_story:
         return
@@ -53,11 +62,11 @@ def main():
     print("Baixando o video de fundo")
     
     # Baixar vídeo de gameplay do YouTube com nome personalizado
-    downloaded_video_path = download_youtube_video(youtube_url, sequence_number=1, output_dir='downloads')
+    downloaded_video_path = download_youtube_video(youtube_url, sequence_number=1, output_dir='tmp')
     
     # Gerar narração
     print("Gerando narração, aguarde...")
-    narration_filename = "narration.mp3"
+    narration_filename = "tmp/narration.mp3"
     text = selected_story['title'] + ". " + selected_story['text']
     text_to_speech(text, narration_filename, "Joanna", "en-US", "mp3")
     
@@ -78,18 +87,20 @@ def main():
     # Adicionar título no início do vídeo
     print("Adicionando legendas ao video")
     subtitles = generate_subtitles(text, narration.duration)
-    print(subtitles)
-    video_with_subtitles = formatted_video
-    for subtitle, start, end in subtitles:
-        video_with_subtitles = add_text_to_video(video_with_subtitles, 
-                                                 subtitle, 
-                                                 start, 
-                                                 end - start, 
-                                                 position=('center', 'bottom'))
+    # print(subtitles)
+    # video_with_subtitles = formatted_video
+    # video_with_subtitles = add_subtitles_to_video(formatted_video, subtitles)
+    video_with_subtitles = add_subtitles_to_video(formatted_video, 'tmp/subtitles.srt')
+    # for subtitle, start, end in subtitles:
+    #     video_with_subtitles = add_text_to_video(video_with_subtitles, 
+    #                                              subtitle, 
+    #                                              start, 
+    #                                              end - start, 
+    #                                              position=('center', 'bottom'))
     
     # Dividir vídeo em segmentos de 1 minuto e 1 segundo
     print("Dividindo em segmentos de 1min e 1 segundo")
-    segments = split_video(video_with_subtitles, "narration.mp3", 61)
+    segments = split_video(video_with_subtitles, "tmp/narration.mp3", 61)
     
     # Exportar segmentos com legendas para TikTok
     export_segments(segments)

@@ -1,6 +1,7 @@
 import boto3
 import moviepy.editor as mp
 import os
+from moviepy.video.tools.subtitles import SubtitlesClip
 
 # Função para gerar narração de texto usando Amazon Polly
 def text_to_speech(text, filename, voice_id, language_code, output_format='mp3'):
@@ -21,7 +22,7 @@ def text_to_speech(text, filename, voice_id, language_code, output_format='mp3')
         )
         
         # Salvar o áudio sintetizado temporariamente
-        temp_filename = f'temp_chunk_{i}.mp3'
+        temp_filename = 'tmp/temp_chunk_{}.mp3'.format(i)
         with open(temp_filename, 'wb') as f:
             f.write(response['AudioStream'].read())
             print(f'Conteúdo de áudio para o segmento {i} escrito no arquivo "{temp_filename}"')
@@ -37,11 +38,23 @@ def text_to_speech(text, filename, voice_id, language_code, output_format='mp3')
     final_audio.write_audiofile(filename)
     print(f'Narração salva em "{filename}"')
 
-# Função para adicionar texto ao vídeo
-def add_text_to_video(video, text, start_time, duration, position='center'):
-    txt_clip = mp.TextClip(text, fontsize=24, color='white')
-    txt_clip = txt_clip.set_position(position).set_duration(duration).set_start(start_time)
-    return mp.CompositeVideoClip([video, txt_clip])
+# # Função para adicionar texto ao vídeo
+# def add_text_to_video(video, text, start_time, duration, position='center'):
+#     txt_clip = mp.TextClip(text, fontsize=24, color='white', method='label')
+#     txt_clip = txt_clip.set_position(position).set_duration(duration).set_start(start_time)
+#     return mp.CompositeVideoClip([video]+ [txt_clip])
+
+def add_subtitles_to_video(video, subtitles):
+    # Função geradora para criar clipes de texto
+    generator = lambda txt: mp.TextClip(txt, fontsize=40, color='white', method='caption')
+    
+    # Criar SubtitlesClip
+    subs = SubtitlesClip(subtitles, generator)
+    
+    # Adicionar legendas ao vídeo
+    video_with_subs = mp.CompositeVideoClip([video, subs.set_position(('center', 'bottom'))])
+    
+    return video_with_subs
 
 # Função para dividir vídeo em segmentos de 1 minuto e 1 segundo
 def split_video(video, narration, segment_duration):    
@@ -68,7 +81,7 @@ def split_video(video, narration, segment_duration):
 
 def export_segments(segments):
     for j, segment in enumerate(segments):
-        output_filename = f"output_segment_{j}.mp4"
+        output_filename = "output/output_segment_{}.mp4".format(j)
         segment.write_videofile(output_filename, codec='libx264', fps=24)
         print(f"Parte {j} salva como {output_filename}")
 
@@ -81,26 +94,4 @@ def remove_temp_audio(filename):
     os.remove(filename)
 
 # Gera legendas para o video
-def generate_subtitles(text, narration_duration, max_chars_per_subtitle=100):
-    subtitles = []
-    words = text.split()
-    current_subtitle = ""
-    current_time = 0
-    start_time = 0
-    duration_per_subtitle = narration_duration / (len(text) / max_chars_per_subtitle)
-    
-    for word in words:
-        if len(current_subtitle) + len(word) + 1 <= max_chars_per_subtitle:
-            if current_subtitle:
-                current_subtitle += " "
-            current_subtitle += word
-        else:
-            subtitles.append((current_subtitle, start_time, start_time + duration_per_subtitle))
-            start_time += duration_per_subtitle
-            current_subtitle = word
-    
-    # Adiciona a última legenda, se houver
-    if current_subtitle:
-        subtitles.append((current_subtitle, start_time, start_time + duration_per_subtitle))
-    
-    return subtitles
+
