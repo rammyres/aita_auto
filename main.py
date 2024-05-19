@@ -45,8 +45,9 @@ def select_story():
 
 # Função principal
 def main():
-    stories = get_popular_aita_stories(10)
-    selected_story = select_story(stories)
+    selected_story = select_story()
+    if not selected_story:
+        return
 
     youtube_url = input("Link do video de fundo (youtube): ")  
     print("Baixando o video de fundo")
@@ -57,7 +58,8 @@ def main():
     # Gerar narração
     print("Gerando narração, aguarde...")
     narration_filename = "narration.mp3"
-    text_to_speech(selected_story['title'] + ". " + selected_story['text'], narration_filename)
+    text = selected_story['title'] + ". " + selected_story['text']
+    text_to_speech(text, narration_filename, "Joanna", "en-US", "mp3")
     
     # Carregar vídeo de gameplay
     gameplay_video = mp.VideoFileClip("{}/yt1.mp4".format(downloaded_video_path))
@@ -75,11 +77,19 @@ def main():
 
     # Adicionar título no início do vídeo
     print("Adicionando legendas ao video")
-    video_with_text = add_text_to_video(formatted_video, selected_story['title'], start_time=0, duration=5)
+    subtitles = generate_subtitles(text, narration.duration)
+    print(subtitles)
+    video_with_subtitles = formatted_video
+    for subtitle, start, end in subtitles:
+        video_with_subtitles = add_text_to_video(video_with_subtitles, 
+                                                 subtitle, 
+                                                 start, 
+                                                 end - start, 
+                                                 position=('center', 'bottom'))
     
     # Dividir vídeo em segmentos de 1 minuto e 1 segundo
     print("Dividindo em segmentos de 1min e 1 segundo")
-    segments = split_video(video_with_text, "narration.mp3", 61)
+    segments = split_video(video_with_subtitles, "narration.mp3", 61)
     
     # Exportar segmentos com legendas para TikTok
     export_segments(segments)

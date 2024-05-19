@@ -31,9 +31,12 @@ def get_popular_aita_stories(limit):
     return stories
 
 def get_story_from_url(url):
-    reddit = praw.Reddit(client_id='YOUR_CLIENT_ID',
-                         client_secret='YOUR_CLIENT_SECRET',
-                         user_agent='YOUR_USER_AGENT')
+    reddit_config = load_reddit_config()
+    reddit = praw.Reddit(
+        client_id=reddit_config['client_id'],
+        client_secret=reddit_config['client_secret'],
+        user_agent=reddit_config['user_agent']
+        )
     
     submission = reddit.submission(url=url)
     
@@ -51,9 +54,12 @@ import random
 
 def get_random_aita_stories(num_posts=10):
     # Inicializar o cliente PRAW
-    reddit = praw.Reddit(client_id='seu_client_id',
-                         client_secret='seu_client_secret',
-                         user_agent='Descrição do seu script')
+    reddit_config = load_reddit_config()
+    reddit = praw.Reddit(
+        client_id=reddit_config['client_id'],
+        client_secret=reddit_config['client_secret'],
+        user_agent=reddit_config['user_agent']
+        )
     
     # Buscar as 200 postagens mais populares do subreddit AITA
     subreddit = reddit.subreddit('amitheasshole')
