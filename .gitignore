@@ -1,1 +1,6 @@
 config/reddit_config.ini
+lib/__pycache__/file_utils.cpython-310.pyc
+lib/__pycache__/reddit_utils.cpython-310.pyc
+lib/__pycache__/subtitles_utils.cpython-310.pyc
+lib/__pycache__/video_utils.cpython-310.pyc
+lib/__pycache__/youtube_utils.cpython-310.pyc

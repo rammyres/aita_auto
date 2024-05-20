@@ -21,6 +21,7 @@ reddit = praw.Reddit(
     user_agent=reddit_config['user_agent']
 )
 
+
 # Função para buscar histórias populares no subreddit AITA
 def get_popular_aita_stories(limit):
     subreddit = reddit.subreddit('AmItheAsshole')
@@ -31,13 +32,6 @@ def get_popular_aita_stories(limit):
     return stories
 
 def get_story_from_url(url):
-    reddit_config = load_reddit_config()
-    reddit = praw.Reddit(
-        client_id=reddit_config['client_id'],
-        client_secret=reddit_config['client_secret'],
-        user_agent=reddit_config['user_agent']
-        )
-    
     submission = reddit.submission(url=url)
     
     # Extrair informações relevantes do post
@@ -53,17 +47,10 @@ import praw
 import random
 
 def get_random_aita_stories(num_posts=10):
-    # Inicializar o cliente PRAW
-    reddit_config = load_reddit_config()
-    reddit = praw.Reddit(
-        client_id=reddit_config['client_id'],
-        client_secret=reddit_config['client_secret'],
-        user_agent=reddit_config['user_agent']
-        )
     
-    # Buscar as 200 postagens mais populares do subreddit AITA
+    # Buscar as 500 postagens mais populares do subreddit AITA
     subreddit = reddit.subreddit('amitheasshole')
-    top_posts = subreddit.top(limit=200)  # Limitar à 200 postagens mais populares
+    top_posts = subreddit.top(limit=500)  # Limitar à 500 postagens mais populares
     
     # Selecionar aleatoriamente 'num_posts' postagens
     selected_posts = random.sample(list(top_posts), num_posts)

@@ -2,14 +2,14 @@ from lib.reddit_utils import *
 from lib.youtube_utils import download_youtube_video
 from lib.video_utils import *
 from lib.subtitles_utils import *
-
+from lib.file_utils import remove_tmp
 import moviepy.editor as mp
 
 # Função para exibir menu e selecionar história
 def select_story():
     print("Selecione uma história para processar:")
     print("1. Escolher entre os 10 posts mais populares")
-    print("2. Escolher entre 10 posts aleatórios entre os 200 mais populares")
+    print("2. Escolher entre 10 posts aleatórios entre os 500 mais populares")
     print("3. Inserir URL de um post específico")
     choice = int(input("Digite o número da opção desejada: "))
     
@@ -66,12 +66,12 @@ def main():
     
     # Gerar narração
     print("Gerando narração, aguarde...")
-    narration_filename = "tmp/narration.mp3"
+    narration_filename = "tmp/__narration__.mp3"
     text = selected_story['title'] + ". " + selected_story['text']
     text_to_speech(text, narration_filename, "Joanna", "en-US", "mp3")
     
     # Carregar vídeo de gameplay
-    gameplay_video = mp.VideoFileClip("{}/yt1.mp4".format(downloaded_video_path))
+    gameplay_video = mp.VideoFileClip("{}/__yt1__.mp4".format(downloaded_video_path))
     
     # Adicionar narração ao vídeo
 
@@ -83,30 +83,27 @@ def main():
     print("Formatando para o formato do tiktok")
     formatted_video = format_video_to_9x16(video_with_audio)
     
-
-    # Adicionar título no início do vídeo
+    # Adiciona legendas ao video 
     print("Adicionando legendas ao video")
-    subtitles = generate_subtitles(text, narration.duration)
-    # print(subtitles)
-    # video_with_subtitles = formatted_video
-    # video_with_subtitles = add_subtitles_to_video(formatted_video, subtitles)
-    video_with_subtitles = add_subtitles_to_video(formatted_video, 'tmp/subtitles.srt')
-    # for subtitle, start, end in subtitles:
-    #     video_with_subtitles = add_text_to_video(video_with_subtitles, 
-    #                                              subtitle, 
-    #                                              start, 
-    #                                              end - start, 
-    #                                              position=('center', 'bottom'))
+    generate_subtitles(text, narration.duration)
+    print("Sincronizando texto")
+    sync_subtitles()
+
+    video_with_subtitles = add_subtitles_to_video(formatted_video, 'tmp/__subtitles__.srt')
     
-    # Dividir vídeo em segmentos de 1 minuto e 1 segundo
-    print("Dividindo em segmentos de 1min e 1 segundo")
-    segments = split_video(video_with_subtitles, "tmp/narration.mp3", 61)
+    if narration.duration>80:
+        print(f"Duração total do video original é {narration.duration}\nDividindo em segmentos de 3 min")
+        segments = split_video(video_with_subtitles, "tmp/__narration__.mp3", 61)
+        export_segments(segments)
+    else:
+        print("Exportando video")
+        video_with_subtitles.write_videofile("output/output.mp4", codec='libx264', fps=24)
     
-    # Exportar segmentos com legendas para TikTok
-    export_segments(segments)
     
-    # Remover arquivo de narração temporário
-    remove_temp_audio(narration_filename)
+    remove_tmp()
+    
+    for filename in os.listdir('output'):
+        print(f"Arquivo {filename} gerado")
 
 if __name__ == '__main__':
     main()

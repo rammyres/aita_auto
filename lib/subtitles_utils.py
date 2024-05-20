@@ -1,6 +1,6 @@
-import srt
+import srt, os
 
-def generate_subtitles(text, narration_duration, max_chars_per_subtitle=40):
+def generate_subtitles(text, narration_duration, max_chars_per_subtitle=24):
     subtitles = []
     words = text.split()
     current_subtitle = ""
@@ -37,7 +37,15 @@ def generate_subtitles(text, narration_duration, max_chars_per_subtitle=40):
     
     sub_srt = srt.compose(subtitles)
 
-    with open("tmp/subtitles.srt", 'w+') as file:
+    with open("tmp/__tmp_sub__.srt", 'w+') as file:
         file.write(sub_srt) 
     # return subtitles
+
+def sync_subtitles():
+    os.system("ffs tmp/__sync__.mp4 -i tmp/__tmp_sub__.srt -o tmp/__tmp_sub1__.srt --gss")
+    os.system("ffs tmp/__sync__.mp4 -i tmp/__tmp_sub1__.srt -o tmp/__tmp_sub2__.srt --gss")
+    os.system("ffs tmp/__sync__.mp4 -i tmp/__tmp_sub2__.srt -o tmp/__tmp_sub3__.srt --gss")
+    os.system("ffs tmp/__sync__.mp4 -i tmp/__tmp_sub3__.srt -o tmp/__tmp_sub3__.srt --gss")
+    os.system("ffs tmp/__sync__.mp4 -i tmp/__tmp_sub2__.srt -o tmp/__tmp_sub3__.srt --gss")
+    os.system("ffs tmp/__sync__.mp4 -i tmp/__tmp_sub3__.srt -o tmp/__subtitles__.srt --gss")
 

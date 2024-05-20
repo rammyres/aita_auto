@@ -5,3 +5,4 @@ pytube==15.0.0
 opencv-py==4.9.0.80
 wand==0.6.13
 srt==3.5.3
+ffsubsync==0.1.2
