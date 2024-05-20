@@ -1,10 +1,12 @@
 import boto3
 import moviepy.editor as mp
-import os
+from moviepy.video.fx.all import crop
 from moviepy.video.tools.subtitles import SubtitlesClip
+import os
+
 
 # Função para gerar narração de texto usando Amazon Polly
-def text_to_speech(text, filename, voice_id, language_code, output_format='mp3'):
+def text_to_speech(text, filename, voice_id, language_code, output_format='mp3', engine='standard'):
     polly = boto3.client('polly', region_name='us-west-2')
     
     # Quebrar o texto em partes de até 1500 caracteres (considerando o limite de Polly)
@@ -18,6 +20,7 @@ def text_to_speech(text, filename, voice_id, language_code, output_format='mp3')
             OutputFormat=output_format,
             LanguageCode=language_code,
             VoiceId=voice_id,
+            Engine=engine,
             TextType='text'
         )
         
@@ -43,7 +46,8 @@ def add_subtitles_to_video(video, subtitles):
     # Função geradora para criar clipes de texto
     generator = lambda txt: mp.TextClip(txt,font='Metropolis-black', 
                                         fontsize=70, 
-                                        color='yellow', 
+                                        color='white',
+                                        stroke_color='black', 
                                         method='label')
     
     # Criar SubtitlesClip
@@ -80,13 +84,38 @@ def export_segments(segments):
         print(f"Parte {j} salva como {output_filename}")
 
 # Função para formatar vídeo para 9x16
+# def format_video_to_9x16(video):
+#     video.write_videofile('tmp/__sync__.mp4', codec='libx264', fps=24)
+#     return video.resize(height=1920).resize(width=1080)
 def format_video_to_9x16(video):
+    """
+    Formata o vídeo para 9x16 cortando a área central do vídeo original.
+    
+    Args:
+    video (VideoClip): O clipe de vídeo original.
+    
+    Returns:
+    VideoClip: O clipe de vídeo formatado para 9x16.
+    """
+    # Calcular a nova largura e altura mantendo a proporção 9x16
+    width, height = video.size
+    new_height = 1920
+    new_width = 1080
+    
+    if width > new_width:
+        # Recortar a área central do vídeo para se ajustar ao novo tamanho
+        x_center = width // 2
+        x1 = x_center - (new_width // 2)
+        x2 = x_center + (new_width // 2)
+        video = crop(video, x1=x1, x2=x2)
+    else:
+        # Caso o vídeo seja mais estreito que o novo tamanho, apenas redimensione
+        video = video.resize(height=new_height)
+    
     video.write_videofile('tmp/__sync__.mp4', codec='libx264', fps=24)
-    return video.resize(height=1920).resize(width=1080)
+    
+    return video.resize(height=new_height)
 
 # Função para remover arquivo de áudio temporário
 def remove_temp_audio(filename):
     os.remove(filename)
-
-# Gera legendas para o video
-

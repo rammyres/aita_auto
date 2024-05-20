@@ -45,7 +45,7 @@ def sync_subtitles():
     os.system("ffs tmp/__sync__.mp4 -i tmp/__tmp_sub__.srt -o tmp/__tmp_sub1__.srt --gss")
     os.system("ffs tmp/__sync__.mp4 -i tmp/__tmp_sub1__.srt -o tmp/__tmp_sub2__.srt --gss")
     os.system("ffs tmp/__sync__.mp4 -i tmp/__tmp_sub2__.srt -o tmp/__tmp_sub3__.srt --gss")
-    os.system("ffs tmp/__sync__.mp4 -i tmp/__tmp_sub3__.srt -o tmp/__tmp_sub3__.srt --gss")
-    os.system("ffs tmp/__sync__.mp4 -i tmp/__tmp_sub2__.srt -o tmp/__tmp_sub3__.srt --gss")
+    os.system("ffs tmp/__sync__.mp4 -i tmp/__tmp_sub3__.srt -o tmp/__tmp_sub4__.srt --gss")
+    os.system("ffs tmp/__sync__.mp4 -i tmp/__tmp_sub2__.srt -o tmp/__tmp_sub5__.srt --gss")
     os.system("ffs tmp/__sync__.mp4 -i tmp/__tmp_sub3__.srt -o tmp/__subtitles__.srt --gss")
 

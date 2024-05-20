@@ -36,6 +36,6 @@ def download_youtube_video(url, sequence_number=1, output_dir='downloads'):
     # output_path = os.path.join(output_dir, filename)
     stream.download(output_path=output_dir)
 
-    rename(output_dir, "yt1.mp4")
+    rename(output_dir, "__yt1__.mp4")
 
     return output_dir
