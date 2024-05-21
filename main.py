@@ -5,8 +5,10 @@ from lib.subtitles_utils import *
 from lib.file_utils import remove_tmp
 import moviepy.editor as mp
 
-def print_line():
-    print("=========##################=========")
+def print_msg(msg):
+    print("==================##################==================")
+    print(msg)
+    print("==================##################==================")
 
 
 # Função para exibir menu e selecionar história
@@ -69,9 +71,9 @@ def main():
     downloaded_video_path = download_youtube_video(youtube_url, sequence_number=1, output_dir='tmp')
     
     # Gerar narração
-    print_line()
-    print("Gerando narração, aguarde...")
-    print_line()
+    
+    print_msg("Gerando narração, aguarde...")
+    
     narration_filename = "tmp/__narration__.mp3"
     text = selected_story['title'] + ". " + selected_story['text']
     text_to_speech(text, narration_filename, "Joanna", "en-US", "mp3", engine='neural')
@@ -80,40 +82,39 @@ def main():
     gameplay_video = mp.VideoFileClip("{}/__yt1__.mp4".format(downloaded_video_path))
     
     # Adicionar narração ao vídeo
-    print_line()
-    print("Adicionando narração ao video")
-    print_line()
+    
+    print_msg("Adicionando narração ao video")
+    
     narration = mp.AudioFileClip(narration_filename)
     video_with_audio = gameplay_video.set_audio(narration)
     
     # Formatar vídeo para 9x16
-    print_line()
-    print("Formatando para o formato do tiktok")
-    print_line()
-    formatted_video = format_video_to_9x16(video_with_audio)
+    
+    print_msg("Formatando para o formato do tiktok")
+    
+    formatted_video = format_video_to_9x16(video_with_audio, narration.duration)
     
     # Adiciona legendas ao video 
-    print_line()
-    print("Adicionando legendas ao video")
-    generate_subtitles(text, narration.duration)
-    print("Sincronizando texto")
-    print_line()
-    sync_subtitles()
+    print_msg("Adicionando legendas ao video")
+    # generate_subtitles(text, narration.duration)
+    generate_subtitles()
+    print_msg("Sincronizando texto")
+    
+    # sync_subtitles()
 
     video_with_subtitles = add_subtitles_to_video(formatted_video, 'tmp/__subtitles__.srt')
     
-    if narration.duration>80:
-        print_line()
-        print(f"Duração total do video original é {narration.duration}\nDividindo em segmentos de 3 min")
-        print_line()
-        segments = split_video(video_with_subtitles, "tmp/__narration__.mp3", 61)
+    if narration.duration>120:
+        
+        print_msg(f"Duração total do video original é {narration.duration}\nDividindo em 2 partes")
+        
+        segments = split_video(video_with_subtitles, narration.duration, narration.duration/2)
         export_segments(segments)
     else:
-        print_line()
-        print("Exportando video")
-        print_line()
-        video_with_subtitles.write_videofile("output/output.mp4", codec='libx264', fps=24)
-    
+        
+        print_msg("Exportando video")
+        
+        export_single(video_with_subtitles, narration.duration, 'output/output.mp4')
     
     remove_tmp()
     
