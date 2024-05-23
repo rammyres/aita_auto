@@ -1,3 +1,4 @@
 config/reddit_config.ini
 lib/__pycache__/
 config/aai.ini
+output

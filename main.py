@@ -4,6 +4,7 @@ from lib.video_utils import *
 from lib.subtitles_utils import *
 from lib.file_utils import remove_tmp
 import moviepy.editor as mp
+import uuid
 
 def print_msg(msg):
     print("==================##################==================")
@@ -68,7 +69,8 @@ def main():
     print("Baixando o video de fundo")
     
     # Baixar vídeo de gameplay do YouTube com nome personalizado
-    downloaded_video_path = download_youtube_video(youtube_url, sequence_number=1, output_dir='tmp')
+    # downloaded_video_path = download_youtube_video(youtube_url, sequence_number=1, output_dir='tmp')
+    downloaded_video_path = download_youtube_video(youtube_url, output_dir='tmp')
     
     # Gerar narração
     
@@ -76,10 +78,10 @@ def main():
     
     narration_filename = "tmp/__narration__.mp3"
     text = selected_story['title'] + ". " + selected_story['text']
-    text_to_speech(text, narration_filename, "Joanna", "en-US", "mp3", engine='neural')
-    
+    # text_to_speech(text, narration_filename, "Joanna", "en-US", "mp3", engine='neural')
+    text_to_speech(text, narration_filename, "Matthew", "en-US", "mp3", engine='neural')
     # Carregar vídeo de gameplay
-    gameplay_video = mp.VideoFileClip("{}/__yt1__.mp4".format(downloaded_video_path))
+    gameplay_video = mp.VideoFileClip("tmp/__yt1__.mp4")
     
     # Adicionar narração ao vídeo
     
@@ -92,7 +94,7 @@ def main():
     
     print_msg("Formatando para o formato do tiktok")
     
-    formatted_video = format_video_to_9x16(video_with_audio, narration.duration)
+    formatted_video = format_video_to_9x16(video_with_audio)
     
     # Adiciona legendas ao video 
     print_msg("Adicionando legendas ao video")
@@ -104,17 +106,21 @@ def main():
 
     video_with_subtitles = add_subtitles_to_video(formatted_video, 'tmp/__subtitles__.srt')
     
+    output_path = f'output/{uuid.uuid4()}'
+
+    os.mkdir(output_path)
+
     if narration.duration>120:
         
         print_msg(f"Duração total do video original é {narration.duration}\nDividindo em 2 partes")
         
         segments = split_video(video_with_subtitles, narration.duration, narration.duration/2)
-        export_segments(segments)
+        export_segments(segments, output_path)
     else:
         
         print_msg("Exportando video")
         
-        export_single(video_with_subtitles, narration.duration, 'output/output.mp4')
+        export_single(video_with_subtitles, narration.duration, f'{output_path}/output.mp4')
     
     remove_tmp()
     

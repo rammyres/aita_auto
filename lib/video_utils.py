@@ -46,7 +46,7 @@ def add_subtitles_to_video(video, subtitles):
     # Função geradora para criar clipes de texto
     generator = lambda txt: mp.TextClip(txt,font='Metropolis-black', 
                                         fontsize=70, 
-                                        color='white',
+                                        color='yellow',
                                         stroke_color='black', 
                                         method='label')
     
@@ -78,39 +78,26 @@ def split_video(video, total_duration, segment_duration):
     return segments
 
 def export_single(video, total_time, output_file):
-    print("export_single")
     start_time = 0 
-    # end_time = min(start_time, total_time)
     output = video.subclip(start_time, total_time)
     output.write_videofile(output_file, codec='libx264', fps=24)
 
 def export_sync(video, total_time):
-    print("export_sync")
     export_single(video, total_time, 'tmp/__sync__.mp4')
 
-def export_segments(segments):
+def export_segments(segments, output_path):
     for j, segment in enumerate(segments):
-        output_filename = f"output/output_segment_{j}.mp4"
+        output_filename = f"{output_path}/output_segment_{j}.mp4"
         segment.write_videofile(output_filename, codec='libx264', fps=24)
         print(f"Parte {j} salva como {output_filename}")
 
 # Função para formatar vídeo para 9x16
-# def format_video_to_9x16(video):
-#     video.write_videofile('tmp/__sync__.mp4', codec='libx264', fps=24)
-#     return video.resize(height=1920).resize(width=1080)
-def format_video_to_9x16(video, duration):
-
+def format_video_to_9x16(video):
     (w, h) = video.size
-
     crop_width = h * 9/16
-    # x1,y1 is the top left corner, and x2, y2 is the lower right corner of the cropped area.
-
     x1, x2 = (w - crop_width)//2, (w+crop_width)//2
     y1, y2 = 0, h
     cropped_clip = crop(video, x1=x1, y1=y1, x2=x2, y2=y2)
-
-    # cropped_clip.write_videofile('tmp/__sync__.mp4', codec='libx264', fps=24)
-    export_sync(cropped_clip, duration)
     
     return cropped_clip.resize(height=1920).resize(width=1080)
 

@@ -1,9 +1,8 @@
 moviepy==1.0.3
 praw==7.7.1
 protobuf==5.26.1
-pytube==15.0.0
+yt_dlp==2024.4.9
 opencv-py==4.9.0.80
 wand==0.6.13
 srt==3.5.3
-ffsubsync==0.1.2
 assemblyai==0.26.0
