@@ -6,3 +6,4 @@ opencv-py==4.9.0.80
 wand==0.6.13
 srt==3.5.3
 assemblyai==0.26.0
+pydub==0.25.1

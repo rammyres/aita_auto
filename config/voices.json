@@ -1,0 +1,14 @@
+{
+    "females":[
+        {"name":"Danielle"},
+        {"name": "Joanna"},
+        {"name": "Kimberly"},
+        {"name": "Ruth"}
+    ],
+    "males":[
+        {"name": "Gregory"},
+        {"name": "Joey"},
+        {"name": "Matthew"},
+        {"name": "Stephen"}
+    ]
+}

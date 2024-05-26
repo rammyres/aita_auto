@@ -1,62 +1,31 @@
-import boto3
 import moviepy.editor as mp
 from moviepy.video.fx.all import crop
 from moviepy.video.tools.subtitles import SubtitlesClip
 import os
 
-
-# Função para gerar narração de texto usando Amazon Polly
-def text_to_speech(text, filename, voice_id, language_code, output_format='mp3', engine='standard'):
-    polly = boto3.client('polly', region_name='us-west-2')
-    
-    # Quebrar o texto em partes de até 1500 caracteres (considerando o limite de Polly)
-    chunks = [text[i:i+1500] for i in range(0, len(text), 1500)]
-    method='bilinear'
-    # Gerar áudios para cada parte do texto
-    audio_streams = []
-    for i, chunk in enumerate(chunks):
-        response = polly.synthesize_speech(
-            Text=chunk,
-            OutputFormat=output_format,
-            LanguageCode=language_code,
-            VoiceId=voice_id,
-            Engine=engine,
-            TextType='text'
-        )
-        
-        # Salvar o áudio sintetizado temporariamente
-        temp_filename = 'tmp/temp_chunk_{}.mp3'.format(i)
-        with open(temp_filename, 'wb') as f:
-            f.write(response['AudioStream'].read())
-            print(f'Conteúdo de áudio para o segmento {i} escrito no arquivo "{temp_filename}"')
-        
-        # Adicionar o stream de áudio ao array
-        audio_streams.append(mp.AudioFileClip(temp_filename))
-        
-        # Remover o arquivo temporário após adicionar ao array
-        os.remove(temp_filename)
-    
-    # Combinar todos os áudios em um único arquivo
-    final_audio = mp.concatenate_audioclips(audio_streams)
-    final_audio.write_audiofile(filename)
-    print(f'Narração salva em "{filename}"')
-
-# # Função para adicionar texto ao vídeo
-def add_subtitles_to_video(video, subtitles):
+# Função para adicionar texto ao vídeo
+def add_subtitles_to_video(video, subtitles, part, total_parts):
     # Função geradora para criar clipes de texto
     generator = lambda txt: mp.TextClip(txt,font='Metropolis-black', 
-                                        fontsize=70, 
+                                        fontsize=90, 
                                         color='yellow',
                                         stroke_color='black', 
                                         method='label')
-    
-    # Criar SubtitlesClip
     subs = SubtitlesClip(subtitles, generator)
-    
     # Adicionar legendas ao vídeo
     video_with_subs = mp.CompositeVideoClip([video, subs.set_position(('center', 'center'))])
     
-    return video_with_subs
+    part_label = mp.TextClip("Complete story" if part == total_parts else f'Part {part}/{total_parts}',
+                             font='Metropolis-black', 
+                             fontsize=70, 
+                             color='yellow',
+                             stroke_color='black', 
+                             method='label')
+    part_label.set_duration(video.duration)
+    video_with_subs_and_parts = mp.CompositeVideoClip([video_with_subs, part_label.set_position(('center', 'bottom'))])
+    video_with_subs_and_parts = video_with_subs_and_parts.set_duration(video_with_subs_and_parts.duration)
+
+    return video_with_subs_and_parts
 
 # Função para dividir vídeo em segmentos de 1 minuto e 1 segundo
 
@@ -87,8 +56,16 @@ def export_sync(video, total_time):
 
 def export_segments(segments, output_path):
     for j, segment in enumerate(segments):
+        part_label = mp.TextClip(f"Part {j+1}/2",font='Metropolis-black', 
+                                        fontsize=70, 
+                                        color='yellow',
+                                        stroke_color='black', 
+                                        method='label')
+        part_label.set_duration(segment.duration)
+        _segment = mp.CompositeVideoClip([segment, part_label.set_position(('center', 'bottom'))])
         output_filename = f"{output_path}/output_segment_{j}.mp4"
-        segment.write_videofile(output_filename, codec='libx264', fps=24)
+        _segment = _segment.set_duration(segment.duration)
+        _segment.write_videofile(output_filename, codec='libx264', fps=24)
         print(f"Parte {j} salva como {output_filename}")
 
 # Função para formatar vídeo para 9x16

@@ -1,8 +1,27 @@
-import praw, configparser, os
+import praw, configparser, os, json
+from nltk.tokenize import word_tokenize
 
 # Caminho para o arquivo de configuração
 config_file = os.path.join(os.path.dirname(__file__),'..','config', 'reddit_config.ini')
 
+# Estima o tempo da narração
+def estimate_time(text):
+    return (len(text.split())/150)*60
+
+# Divide o tempo em segmentos para narração
+def split_paragraphs(text, number_of_parts):
+    _paragraphs = text.split("* *") # Divide o texto em parágrafos 
+
+    # Divige os parágrafos em listas de partes de acordo com a estimativa de partes 
+    _split_parts = [_paragraphs[i:i+number_of_parts] for i in range(0, len(_paragraphs), number_of_parts)]
+
+    # Transforma as listas de partes em partes de texto
+    _paragraph_parts = []
+    for i in range(len(_split_parts)):
+        _paragraph_parts.append(' '.join(_split_parts[i]))
+        
+    return _paragraph_parts
+                  
 # Função para carregar configurações do Reddit
 def load_reddit_config():
     config = configparser.ConfigParser()
@@ -15,7 +34,7 @@ def load_reddit_config():
 
 # Configuração do Reddit
 reddit_config = load_reddit_config()
-reddit = praw.Reddit(
+reddit = praw.Reddit(   
     client_id=reddit_config['client_id'],
     client_secret=reddit_config['client_secret'],
     user_agent=reddit_config['user_agent']
@@ -67,3 +86,16 @@ def get_random_aita_stories(num_posts=10):
     
     return stories
 
+def replace_profanities(text):
+    profanities_dict = dict()
+    with open("config/profanities.json") as file:
+        profanities_dict = json.load(file)
+        
+    words = word_tokenize(text)
+    
+    # Replace profanities with euphemisms
+    cleaned_words = [profanities_dict.get(word.lower(), word) for word in words]
+    
+    # Reconstruct the text
+    cleaned_text = ' '.join(cleaned_words)
+    return cleaned_text

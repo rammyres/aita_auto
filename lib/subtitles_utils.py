@@ -2,6 +2,7 @@
 
 import os, configparser, time
 import assemblyai as aai
+from lib.interface_utils import *
 
 def return_aai_key():
     config_file = os.path.join(os.path.dirname(__file__),'..','config', 'aai.ini')
@@ -9,12 +10,13 @@ def return_aai_key():
     aai_config.read(config_file)
     return aai_config.get('aai_settings','key')
 
-def generate_subtitles():
+def generate_subtitles(narration_file, output_file):
+    config = aai.TranscriptionConfig(speech_model=aai.SpeechModel.best)
     aai.settings.api_key = return_aai_key()
-    transcriber = aai.Transcriber()
+    transcriber = aai.Transcriber(config=config)
 
-    print("Iniciando transcrição...")
-    transcript = transcriber.transcribe('tmp/__narration__.mp3')
+    print_msg("Iniciando transcrição...")
+    transcript = transcriber.transcribe(narration_file)
     
     # Verifica o status do job até que esteja completo
     while transcript.status not in ['completed', 'failed']:
@@ -26,7 +28,7 @@ def generate_subtitles():
         print("Not ready yet...")
         time.sleep(10)
 
-    srt_response = transcript.export_subtitles_srt(chars_per_caption=24)
-    with open("tmp/__subtitles__.srt", 'w') as file:
+    srt_response = transcript.export_subtitles_srt(chars_per_caption=20)
+    with open(output_file, 'w') as file:
         file.write(srt_response)
     print("Legendas baixadas!")

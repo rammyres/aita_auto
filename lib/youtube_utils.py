@@ -1,4 +1,4 @@
-import os, yt_dlp
+import os, yt_dlp, json, random
 from pytube import YouTube
 
 def rename(directory, new_name):
@@ -20,6 +20,13 @@ def rename(directory, new_name):
             return
     
     print('Nenhum arquivo encontrado para renomear.')
+
+def get_random_background_video():
+    with open("config/videos.json") as voices_file:
+        videos = json.load(voices_file)
+        video = random.choice(videos['videos'])
+        return video['video']
+
 
 # def download_youtube_video(url, sequence_number=1, output_dir='downloads'):
 #     # Limpa o diretório de downloads se já existir
@@ -55,3 +62,4 @@ def download_youtube_video(youtube_url, output_dir='tmp'):
     #         new_path = os.path.join(output_dir, '__yt1__.mp4')
     #         os.rename(old_path, new_path)
     #         break
+

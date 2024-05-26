@@ -1,126 +1,106 @@
 from lib.reddit_utils import *
-from lib.youtube_utils import download_youtube_video
+from lib.youtube_utils import *
 from lib.video_utils import *
 from lib.subtitles_utils import *
-from lib.file_utils import remove_tmp
+from lib.file_utils import *
+from lib.audio_utils import *
+from lib.interface_utils import *
 import moviepy.editor as mp
 import uuid
 
-def print_msg(msg):
-    print("==================##################==================")
-    print(msg)
-    print("==================##################==================")
-
-
-# Função para exibir menu e selecionar história
-def select_story():
-    print("Selecione uma história para processar:")
-    print("1. Escolher entre os 10 posts mais populares")
-    print("2. Escolher entre 10 posts aleatórios entre os 500 mais populares")
-    print("3. Inserir URL de um post específico")
-    choice = int(input("Digite o número da opção desejada: "))
-    
-    if choice == 1:
-        stories = get_popular_aita_stories(10)
-        print("Escolha um dos seguintes posts:")
-        for i, story in enumerate(stories):
-            print(f"{i + 1}. {story['title']}")
-            print(f"   Link: {story['url']}")
-        story_choice = int(input("Digite o número da história desejada: ")) - 1
-        return stories[story_choice]
-    
-    if choice == 2:
-        stories = get_random_aita_stories(10)
-        print("Escolha um dos seguintes posts:")
-        for i, story in enumerate(stories):
-            print(f"{i + 1}. {story['title']}")
-            print(f"   Link: {story['url']}")
-        story_choice = int(input("Digite o número da história desejada: ")) - 1
-        return stories[story_choice]
-    
-    elif choice == 3:
-        url = input("Insira a URL do post específico: ")
-        story = get_story_from_url(url)
-        if story:
-            return story
-        else:
-            print("URL inválida ou post não encontrado.")
-            return None
-    
-    else:
-        print("Opção inválida.")
-        return None
-
 # Função principal
 def main():
-# Verifica se o diretório temporário existe
-    if not os.path.exists('tmp'):
-        os.mkdir('tmp')
-
-# Verifica se o diretório de saida existe
-    if not os.path.exists('output'):
-        os.mkdir('output')
+    mk_dirs()
+    subtitle_path = 'tmp/subtitles'
+    audio_path = 'tmp/audio'
 
     selected_story = select_story()
     if not selected_story:
         return
 
-    youtube_url = input("Link do video de fundo (youtube): ")  
+    # Escolhe o sexo do narrador
+    voice = get_random_voice(set_gender())
+    
+    # Baixar vídeo de gameplay do YouTube
     print("Baixando o video de fundo")
-    
-    # Baixar vídeo de gameplay do YouTube com nome personalizado
-    # downloaded_video_path = download_youtube_video(youtube_url, sequence_number=1, output_dir='tmp')
-    downloaded_video_path = download_youtube_video(youtube_url, output_dir='tmp')
-    
+    youtube_url = get_random_background_video()
+    download_youtube_video(youtube_url, output_dir='tmp')
+
     # Gerar narração
+    print_msg("Preparando narração, aguarde...")
+
+    unclean_text = selected_story['title'] + ". " + selected_story['text']
+    text = replace_profanities(unclean_text)
+
+    paragraphs = []
+    estimate = estimate_time(text)
+
+    if estimate<180.0:
+        paragraphs.append(text)
+    else:
+        print(int(estimate//180))
+        paragraphs = split_paragraphs(text,int(estimate//180))
+
+    print_msg(f'Video em 1 parte, gerando narração...' if len(paragraphs) == 1 else f'Video em {len(paragraphs)} partes, processando as partes')
+
+    for i in range(0, len(paragraphs)):
+        print_msg(f"Gerando áudio da parte {i+1}")
+        narration_filename = f"{audio_path}/__part_{i}__.mp3"
+        text_to_speech(paragraphs[i], narration_filename, voice, "en-US", "mp3", engine='neural')
     
-    print_msg("Gerando narração, aguarde...")
-    
-    narration_filename = "tmp/__narration__.mp3"
-    text = selected_story['title'] + ". " + selected_story['text']
-    # text_to_speech(text, narration_filename, "Joanna", "en-US", "mp3", engine='neural')
-    text_to_speech(text, narration_filename, "Matthew", "en-US", "mp3", engine='neural')
+    # narration_filename = "tmp/__narration__.mp3"
+    # text_to_speech(text, narration_filename, gender, "en-US", "mp3", engine='neural')
     # Carregar vídeo de gameplay
     gameplay_video = mp.VideoFileClip("tmp/__yt1__.mp4")
     
     # Adicionar narração ao vídeo
     
-    print_msg("Adicionando narração ao video")
-    
-    narration = mp.AudioFileClip(narration_filename)
-    video_with_audio = gameplay_video.set_audio(narration)
-    
-    # Formatar vídeo para 9x16
-    
-    print_msg("Formatando para o formato do tiktok")
-    
-    formatted_video = format_video_to_9x16(video_with_audio)
-    
-    # Adiciona legendas ao video 
-    print_msg("Adicionando legendas ao video")
-    # generate_subtitles(text, narration.duration)
-    generate_subtitles()
-    print_msg("Sincronizando texto")
-    
-    # sync_subtitles()
+    narrations = [ f for f in os.listdir(audio_path) if f.endswith('.mp3') ]
 
-    video_with_subtitles = add_subtitles_to_video(formatted_video, 'tmp/__subtitles__.srt')
-    
+    print_msg(f'Video em 1 parte, processando...' if len(narrations) == 1 else f'Video em {len(narrations)} partes, processando as partes')
+
     output_path = f'output/{uuid.uuid4()}'
 
     os.mkdir(output_path)
 
-    if narration.duration>120:
+    for i in range(len(paragraphs)):
+        narration_audio = mp.AudioFileClip(f"{audio_path}/__part_{i}__.mp3")
+        video_with_audio = gameplay_video.set_audio(narration_audio)
+        print_msg("Formatando para o formato do tiktok")
+        formatted_video = format_video_to_9x16(video_with_audio)
+        print_msg("Adicionando legendas ao video")
+        generate_subtitles(f'{audio_path}/__part_{i}__.mp3', f'{subtitle_path}/__part_{i}.srt')
+        video_with_subtitles = add_subtitles_to_video(formatted_video, 
+                                                      f'{subtitle_path}/__part_{i}.srt', 
+                                                      i+1, 
+                                                      len(paragraphs))
+        export_single(video_with_subtitles, 
+                      narration_audio.duration, 
+                      f'{output_path}/output_part_{i+1}.mp4')
         
-        print_msg(f"Duração total do video original é {narration.duration}\nDividindo em 2 partes")
+    
+    # Formatar vídeo para 9x16
+    
+    # Adiciona legendas ao video 
+    
+    # generate_subtitles(text, narration.duration)
+    
+    
+    # sync_subtitles()
+
+    # video_with_subtitles = add_subtitles_to_video(formatted_video, 'tmp/__subtitles__.srt')
+
+    # if narration.duration>120:
         
-        segments = split_video(video_with_subtitles, narration.duration, narration.duration/2)
-        export_segments(segments, output_path)
-    else:
+    #     print_msg(f"Duração total do video original é {narration.duration}\nDividindo em 2 partes")
         
-        print_msg("Exportando video")
+    #     segments = split_video(video_with_subtitles, narration.duration, narration.duration/2)
+    #     export_segments(segments, output_path)
+    # else:
         
-        export_single(video_with_subtitles, narration.duration, f'{output_path}/output.mp4')
+    #     print_msg("Exportando video")
+        
+    #     export_single(video_with_subtitles, narration.duration, f'{output_path}/output.mp4')
     
     remove_tmp()
     
