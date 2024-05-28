@@ -18,6 +18,8 @@ def get_random_voice(gender):
 # Função para gerar narração de texto usando Amazon Polly
 def text_to_speech(text, filename, voice, language_code, output_format='mp3', engine='standard'):
     polly = boto3.client('polly', region_name='us-west-2')
+
+    print(text)
     
     print(f"Voz escolhida: {voice}")
 

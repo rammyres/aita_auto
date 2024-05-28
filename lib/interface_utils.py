@@ -29,7 +29,8 @@ def select_story():
     print("Selecione uma história para processar:")
     print("1. Escolher entre os 10 posts mais populares")
     print("2. Escolher entre 10 posts aleatórios entre os 500 mais populares")
-    print("3. Inserir URL de um post específico")
+    print("3. Escolher entre 10 posts aleatórios entre os 100 mais populares da última semana")
+    print("4. Inserir URL de um post específico")
     print("99 - Sair")
 
     while(True):
@@ -54,7 +55,16 @@ def select_story():
                 story_choice = int(input("Digite o número da história desejada: ")) - 1
                 return stories[story_choice]
             
-            elif choice == 3:
+            if choice == 3:
+                stories = get_random_recent_aita_stories(10)
+                print("Escolha um dos seguintes posts:")
+                for i, story in enumerate(stories):
+                    print(f"{i + 1}. {story['title']}")
+                    print(f"   Link: {story['url']}")
+                story_choice = int(input("Digite o número da história desejada: ")) - 1
+                return stories[story_choice]
+            
+            elif choice == 4:
                 url = input("Insira a URL do post específico: ")
                 story = get_story_from_url(url)
                 if story:

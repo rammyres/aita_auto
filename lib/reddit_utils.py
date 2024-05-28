@@ -1,8 +1,6 @@
-import praw, configparser, os, json
+import praw, json
+from lib.config_utils import *
 from nltk.tokenize import word_tokenize
-
-# Caminho para o arquivo de configuração
-config_file = os.path.join(os.path.dirname(__file__),'..','config', 'reddit_config.ini')
 
 # Estima o tempo da narração
 def estimate_time(text):
@@ -10,27 +8,31 @@ def estimate_time(text):
 
 # Divide o tempo em segmentos para narração
 def split_paragraphs(text, number_of_parts):
-    _paragraphs = text.split("* *") # Divide o texto em parágrafos 
+    if number_of_parts == 1:
+        number_of_parts+=1
 
-    # Divige os parágrafos em listas de partes de acordo com a estimativa de partes 
-    _split_parts = [_paragraphs[i:i+number_of_parts] for i in range(0, len(_paragraphs), number_of_parts)]
+    # Verifica se o texto contém o divisor '* *'
+    if '* *' in text:
+        _paragraphs = text.split('* *')  # Divide o texto em parágrafos
+    else:
+        # Se não há divisores '* *', divide o texto em partes iguais
+        total_length = len(text)
+        part_length = total_length // number_of_parts
+        _paragraphs = [text[i:i + part_length] for i in range(0, total_length, part_length)]
 
+    # Ajusta o número de partes de acordo com a estimativa
+    num_paragraphs_per_part = max(1, len(_paragraphs) // number_of_parts)
+    _split_parts = [_paragraphs[i:i + num_paragraphs_per_part] for i in range(0, len(_paragraphs), num_paragraphs_per_part)]
+
+    # Garante que _split_parts não tenha mais partes do que number_of_parts
+    while len(_split_parts) > number_of_parts:
+        last_part = _split_parts.pop()
+        _split_parts[-1].extend(last_part)
+    
     # Transforma as listas de partes em partes de texto
-    _paragraph_parts = []
-    for i in range(len(_split_parts)):
-        _paragraph_parts.append(' '.join(_split_parts[i]))
-        
+    _paragraph_parts = [' '.join(part) for part in _split_parts]
+
     return _paragraph_parts
-                  
-# Função para carregar configurações do Reddit
-def load_reddit_config():
-    config = configparser.ConfigParser()
-    config.read(config_file)
-    return {
-        'client_id': config.get('reddit', 'client_id'),
-        'client_secret': config.get('reddit', 'client_secret'),
-        'user_agent': config.get('reddit', 'user_agent')
-    }
 
 # Configuração do Reddit
 reddit_config = load_reddit_config()
@@ -70,6 +72,27 @@ def get_random_aita_stories(num_posts=10):
     # Buscar as 500 postagens mais populares do subreddit AITA
     subreddit = reddit.subreddit('amitheasshole')
     top_posts = subreddit.top(limit=500)  # Limitar à 500 postagens mais populares
+    
+    # Selecionar aleatoriamente 'num_posts' postagens
+    selected_posts = random.sample(list(top_posts), num_posts)
+    
+    # Extrair informações de título e URL para cada post selecionado
+    stories = []
+    for post in selected_posts:
+        story = {
+            'title': post.title,
+            'url': post.url,
+            'text': post.selftext
+        }
+        stories.append(story)
+    
+    return stories
+
+def get_random_recent_aita_stories(num_posts=10):
+    
+    # Buscar as 500 postagens mais populares do subreddit AITA
+    subreddit = reddit.subreddit('amitheasshole')
+    top_posts = subreddit.top(limit=100, time_filter = 'week')  # Limitar à 500 postagens mais populares
     
     # Selecionar aleatoriamente 'num_posts' postagens
     selected_posts = random.sample(list(top_posts), num_posts)

@@ -7,7 +7,7 @@ Este é um script Python para criar vídeos automáticos com histórias do subre
 - Baixa vídeos do YouTube para serem usados como background.
 - Gera narração automática a partir das histórias selecionadas.
 - Formata os vídeos para o formato TikTok (9x16).
-- Adiciona legendas e divide os vídeos em segmentos de 1 minuto e 1 segundo.
+- Adiciona legendas e divide os vídeos em segmentos dependendo da duração estimada do texto
 - Exporta os segmentos com legendas para TikTok.
 
 ## Requisitos
