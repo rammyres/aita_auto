@@ -26,7 +26,7 @@ def main():
     voice = get_random_voice(set_gender())
     
     # Baixar vídeo de gameplay do YouTube
-    print("Baixando o video de fundo")
+    print_msg("Baixando o video de fundo")
     youtube_url = get_random_background_video()
     download_youtube_video(youtube_url, output_dir='tmp')
 

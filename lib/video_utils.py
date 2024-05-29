@@ -14,8 +14,9 @@ def add_subtitles_to_video(video, subtitles, part, total_parts):
     subs = SubtitlesClip(subtitles, generator)
     # Adicionar legendas ao vídeo
     video_with_subs = mp.CompositeVideoClip([video, subs.set_position(('center', 'center'))])
+
     
-    part_label = mp.TextClip("Complete story" if part == total_parts else f'Part {part}/{total_parts}',
+    part_label = mp.TextClip("Complete story" if total_parts==1 else f'Part {part}/{total_parts}',
                              font='Metropolis-black', 
                              fontsize=70, 
                              color='yellow',

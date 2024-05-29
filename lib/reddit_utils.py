@@ -1,4 +1,4 @@
-import praw, json
+import praw, json, re
 from lib.config_utils import *
 from nltk.tokenize import word_tokenize
 
@@ -118,6 +118,10 @@ def replace_profanities(text):
     
     # Replace profanities with euphemisms
     cleaned_words = [profanities_dict.get(word.lower(), word) for word in words]
+
+    for key, value in profanities_dict.items():
+        pattern = re.compile(r'\b' + re.escape(key) + r'\b', re.IGNORECASE)
+        text = pattern.sub(value, text)
     
     # Reconstruct the text
     cleaned_text = ' '.join(cleaned_words)
