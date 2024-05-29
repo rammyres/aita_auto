@@ -1,7 +1,5 @@
 import json, boto3, random, os
 import moviepy.editor as mp
-from moviepy.audio.io.AudioFileClip import AudioClip
-import numpy as np
 
 # Função para criar um segmento de áudio com silêncio
 def get_random_voice(gender):
