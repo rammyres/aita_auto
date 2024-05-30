@@ -32,21 +32,27 @@ def main():
         print_msg("Preparando narração, aguarde...")
 
         unclean_text = selected_story['title'] + ". " + selected_story['text']
-        text = replace_profanities(unclean_text)
+        text = prepare_text(unclean_text)
 
         paragraphs = []
+        # Estima o tempo de duração com base na contagem de palavras
         estimate = estimate_time(text)
-
         print_msg(f"Estimativa de tempo {estimate}")
 
-        if estimate<180.0:
+        # Divide o texto em partes se o tempo for superior a 3 minutos
+        parts = 1 if int(estimate//180) <= 1 else int(estimate//180)
+        if estimate>180.0 and parts == 1: # Certifica que o video terá pelo menos
+            parts+=1                      # 2 partes, caso seja maior que 3 minutos
+    
+        # Prepara o texto para processamento, separando em segmentos de paragrafos
+        if parts == 1:
             paragraphs.append(text)
         else:
-            parts = 2 if int(estimate//180) == 1 else int(estimate//180)
             paragraphs = split_paragraphs(text, parts)
 
+    
+        # Prepara a narração
         print_msg(f'Video em 1 parte, gerando narração...' if len(paragraphs) == 1 else f'Video em {len(paragraphs)} partes, processando as partes')
-
         for i in range(0, len(paragraphs)):
             print_msg(f"Gerando áudio da parte {i+1}")
             narration_filename = f"{audio_path}/__part_{i}__.mp3"
@@ -73,12 +79,12 @@ def main():
             video_with_audio = gameplay_video.set_audio(narration_audio) # Inclui o áudio no video de fundo
             print_msg("Formatando para o formato do tiktok") 
             formatted_video = format_video_to_9x16(video_with_audio) # Recorta o vídeo para o formato 9x16
-            print_msg("Adicionando legendas ao video")
             
             # Gera as legendas a partir do áudio de cada uma as partes
+            print_msg("Adicionando legendas ao video")
             generate_subtitles(f'{audio_path}/__part_{i}__.mp3', f'{subtitle_path}/__part_{i}.srt')
 
-            # Cria a camada de legendas e caption de parte
+            # Cria a camada de legendas e caption da parte
             video_with_subtitles = add_subtitles_to_video(formatted_video, 
                                                         f'{subtitle_path}/__part_{i}.srt', 
                                                         i+1, 
@@ -94,7 +100,9 @@ def main():
         
         for filename in os.listdir(output_path):
             print(f"Arquivo {output_path}/{filename} gerado")
+        
 
+        notify()
         input("Pressione ENTER para continuar")
 
 if __name__ == '__main__':

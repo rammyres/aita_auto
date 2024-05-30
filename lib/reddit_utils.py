@@ -106,24 +106,43 @@ def get_random_recent_aita_stories(num_posts=10):
     
     return stories
 
-def replace_profanities(text):
+def prepare_text(text):
+    """
+    Esta função preprocessa o texto para remover
+    clutter (simbolos indevidos, urls) e também
+    remove palavrões comuns, substituindo por 
+    eufemismos e troca siglas pelos seus signi-
+    ficados.
+    """
+    # Substitui palavrões pelos eufemismos
     profanities_dict = dict()
     with open("config/profanities.json") as file:
         profanities_dict = json.load(file)
-        
-    words = word_tokenize(text)
     
-    for key, value in profanities_dict.items():
-        pattern = re.compile(r'\b' + re.escape(key) + r'\b', re.IGNORECASE)
-        text = pattern.sub(value, text)
+    for k, v in profanities_dict.items():
+        text = re.sub(rf'\b{k}\b', v, text)
+    
+    # Substitui siglas pela seus significados:
+    acronyms_dict = dict()
+    with open('config/acronyms.json', 'r') as file:
+        acronyms_dict = json.load(file)
 
-    # Replace profanities with euphemisms
+    for k, v in acronyms_dict.items():
+        text = re.sub(rf'\b{k}\b', v, text)
+    
+    # Retira caracteres indesejados
+    pattern = r"\s*’\s*"
+    text = re.sub(pattern, "'", text)
+
+    # Remove urls do texto
+    text = re.sub(r"http\S+", "", text)
+
+    # Usa NLTK para verificar se algum palavrão escapou
+    words = word_tokenize(text) # Transforma o texto em tokens
+
     cleaned_words = [profanities_dict.get(word.lower(), word) for word in words]
     
-    # Reconstruct the text
+    # Reconstroi o texto
     cleaned_text = ' '.join(cleaned_words)
     
-    pattern = r"\s*’\s*"
-    
-    cleaned_text = re.sub(pattern, "'", cleaned_text)
     return cleaned_text

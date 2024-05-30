@@ -1,5 +1,6 @@
 import json, boto3, random, os
 import moviepy.editor as mp
+from playsound import playsound
 
 # Função para criar um segmento de áudio com silêncio
 def get_random_voice(gender):
@@ -16,6 +17,7 @@ def get_random_voice(gender):
 # Função para gerar narração de texto usando Amazon Polly
 def text_to_speech(text, filename, voice, language_code, output_format='mp3', engine='standard'):
     polly = boto3.client('polly', region_name='us-west-2')
+    silence_seg = mp.AudioFileClip('assets/audio/silence.mp3') # 1s de silêncio ao final de cada parte
     
     if voice == 'ruth' or voice == 'matthew':
         engine = 'generative'
@@ -44,6 +46,7 @@ def text_to_speech(text, filename, voice, language_code, output_format='mp3', en
         
         # Adicionar o stream de áudio ao array
         audio_streams.append(mp.AudioFileClip(temp_filename))
+        audio_streams.append(silence_seg)
     
         # Remover o arquivo temporário após adicionar ao array
         os.remove(temp_filename)
@@ -52,3 +55,6 @@ def text_to_speech(text, filename, voice, language_code, output_format='mp3', en
     final_audio = mp.concatenate_audioclips(audio_streams)
     final_audio.write_audiofile(filename)
     print(f'Narração salva em "{filename}"')
+
+def notify():
+    playsound('assets/audio/notification.mp3')
