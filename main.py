@@ -27,11 +27,6 @@ def main():
         # Escolhe o sexo do narrador
         voice = get_random_voice(set_gender())
         print_msg(f"Voz escolhida: {voice}")
-        
-        # Baixar vídeo de gameplay do YouTube
-        print_msg("Baixando o video de fundo")
-        youtube_url = get_random_background_video()
-        download_youtube_video(youtube_url, output_dir='tmp')
 
         # Gerar narração
         print_msg("Preparando narração, aguarde...")
@@ -56,6 +51,11 @@ def main():
             print_msg(f"Gerando áudio da parte {i+1}")
             narration_filename = f"{audio_path}/__part_{i}__.mp3"
             text_to_speech(paragraphs[i], narration_filename, voice, "en-US", "mp3", engine='neural')
+        
+        # Baixar vídeo de gameplay do YouTube
+        print_msg("Baixando o video de fundo")
+        youtube_url = get_random_background_video()
+        download_youtube_video(youtube_url, output_dir='tmp')
         
         # Carregar vídeo de gameplay
         gameplay_video = mp.VideoFileClip("tmp/__yt1__.mp4")

@@ -122,4 +122,8 @@ def replace_profanities(text):
     
     # Reconstruct the text
     cleaned_text = ' '.join(cleaned_words)
+    
+    pattern = r"\s*’\s*"
+    
+    cleaned_text = re.sub(pattern, "'", cleaned_text)
     return cleaned_text
