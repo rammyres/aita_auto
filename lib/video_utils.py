@@ -50,6 +50,7 @@ def split_video(video, total_duration, segment_duration):
 def export_single(video, total_time, output_file):
     start_time = 0 
     output = video.subclip(start_time, total_time)
+    output = output.resize(height=1920).resize(width=1080)
     output.write_videofile(output_file, codec='libx264', fps=24)
 
 def export_sync(video, total_time):
@@ -76,8 +77,7 @@ def format_video_to_9x16(video):
     x1, x2 = (w - crop_width)//2, (w+crop_width)//2
     y1, y2 = 0, h
     cropped_clip = crop(video, x1=x1, y1=y1, x2=x2, y2=y2)
-    
-    return cropped_clip.resize(height=1920).resize(width=1080)
+    return cropped_clip.resize(newsize=(1080, 1920))
 
 # Função para remover arquivo de áudio temporário
 def remove_temp_audio(filename):

@@ -6,13 +6,15 @@ from lib.file_utils import *
 from lib.audio_utils import *
 from lib.interface_utils import *
 import moviepy.editor as mp
-import uuid, gc
+import uuid, gc, os
 
 # Função principal
 def main():
     # Verifica se os arquivos de configuração estão disponíveis e os cria se não estiverem
     # Os arquivos criados são para os serviços aws, aai e reddit
     check_configs()
+    os.environ["TOKENIZERS_PARALLELISM"] = "false" # Disabilita paralelismo para uso do BeRT
+                                                   # na verificação ortográfica 
 
     while True:
         selected_story = select_story()
@@ -104,6 +106,7 @@ def main():
 
         notify()
         input("Pressione ENTER para continuar")
+        gc.collect()
 
 if __name__ == '__main__':
     main()

@@ -3,11 +3,11 @@
 import time
 import assemblyai as aai
 from lib.interface_utils import *
-from lib.config_utils import return_aai_key
+from lib.config_utils import get_aai_key
 
 def generate_subtitles(narration_file, output_file):
     config = aai.TranscriptionConfig(speech_model=aai.SpeechModel.best)
-    aai.settings.api_key = return_aai_key()
+    aai.settings.api_key = get_aai_key()
     transcriber = aai.Transcriber(config=config)
 
     print_msg("Iniciando transcrição...")

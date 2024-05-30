@@ -1,10 +1,19 @@
 import praw, json, re
 from lib.config_utils import *
 from nltk.tokenize import word_tokenize
+import spacy, contextualSpellCheck
 
 # Estima o tempo da narração
 def estimate_time(text):
     return (len(text.split())/150)*60
+
+def spell_check(text):
+    nlp = spacy.load('en_core_web_lg')
+    contextualSpellCheck.add_to_pipe(nlp)
+    doc = nlp(text=text)
+
+    return doc._.outcome_spellCheck
+
 
 # Divide o tempo em segmentos para narração
 def split_paragraphs(text, number_of_parts):
@@ -118,6 +127,8 @@ def prepare_text(text):
     profanities_dict = dict()
     with open("config/profanities.json") as file:
         profanities_dict = json.load(file)
+
+    text = spell_check(text)
     
     for k, v in profanities_dict.items():
         text = re.sub(rf'\b{k}\b', v, text)

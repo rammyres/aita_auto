@@ -49,7 +49,7 @@ def check_aii_config():
             config.write(f)
             print("Arquivo de configuração escrito\n Se você estiver usando github inclua suas credenciais no .gitignore!")
 
-def return_aai_key():
+def get_aai_key():
     config_file = os.path.join(os.path.dirname(__file__),'..','config', 'aai.ini')
     aai_config = configparser.ConfigParser()
     aai_config.read(config_file)
