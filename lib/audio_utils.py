@@ -17,7 +17,8 @@ def get_random_voice(gender):
 def text_to_speech(text, filename, voice, language_code, output_format='mp3', engine='standard'):
     polly = boto3.client('polly', region_name='us-west-2')
     
-    print(f"Voz escolhida: {voice}")
+    if voice == 'ruth' or voice == 'matthew':
+        engine = 'generative'
 
     # Quebrar o texto em partes de até 1500 caracteres (considerando o limite de Polly)
     chunks = [text[i:i+1500] for i in range(0, len(text), 1500)]
@@ -28,6 +29,7 @@ def text_to_speech(text, filename, voice, language_code, output_format='mp3', en
         response = polly.synthesize_speech(
             Text=chunk,
             OutputFormat=output_format,
+            SampleRate='24000',
             LanguageCode=language_code,
             VoiceId=voice,
             Engine=engine,

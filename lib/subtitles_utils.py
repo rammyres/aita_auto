@@ -1,14 +1,9 @@
 # import srt, os
 
-import os, configparser, time
+import time
 import assemblyai as aai
 from lib.interface_utils import *
-
-def return_aai_key():
-    config_file = os.path.join(os.path.dirname(__file__),'..','config', 'aai.ini')
-    aai_config = configparser.ConfigParser()
-    aai_config.read(config_file)
-    return aai_config.get('aai_settings','key')
+from lib.config_utils import return_aai_key
 
 def generate_subtitles(narration_file, output_file):
     config = aai.TranscriptionConfig(speech_model=aai.SpeechModel.best)

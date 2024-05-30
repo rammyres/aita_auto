@@ -8,9 +8,6 @@ def estimate_time(text):
 
 # Divide o tempo em segmentos para narração
 def split_paragraphs(text, number_of_parts):
-    if number_of_parts == 1:
-        number_of_parts+=1
-
     # Verifica se o texto contém o divisor '* *'
     if '* *' in text:
         _paragraphs = text.split('* *')  # Divide o texto em parágrafos
@@ -116,12 +113,12 @@ def replace_profanities(text):
         
     words = word_tokenize(text)
     
-    # Replace profanities with euphemisms
-    cleaned_words = [profanities_dict.get(word.lower(), word) for word in words]
-
     for key, value in profanities_dict.items():
         pattern = re.compile(r'\b' + re.escape(key) + r'\b', re.IGNORECASE)
         text = pattern.sub(value, text)
+
+    # Replace profanities with euphemisms
+    cleaned_words = [profanities_dict.get(word.lower(), word) for word in words]
     
     # Reconstruct the text
     cleaned_text = ' '.join(cleaned_words)
