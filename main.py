@@ -4,7 +4,8 @@ from lib.video_utils import *
 from lib.subtitles_utils import *
 from lib.file_utils import *
 from lib.audio_utils import *
-from lib.interface_utils import *
+from lib.interface_utils import select_story
+from lib.data_utils import save_to_json
 import moviepy.editor as mp
 import uuid, gc, os
 
@@ -17,9 +18,19 @@ def main():
                                                    # na verificação ortográfica 
 
     while True:
-        selected_story = select_story()
+        selected_story = None
+        choice = select_story()
+        if choice:
+            if choice[0] == 'video':
+                for i in range(len(choice[1]['videos'])):
+                    for j in range(len(choice[1]['videos'][i])):
+                        print(f"Caminho para parte {i+1}: {choice[1]['videos'][j]}")
+                continue
+            else:
+                selected_story = choice[1]
+
         if not selected_story:
-            return
+            continue
 
         # Cria as pastas temporárias e de saída somente após a escolha da história
         subtitle_path = 'tmp/subtitles'
@@ -39,7 +50,7 @@ def main():
         paragraphs = []
         # Estima o tempo de duração com base na contagem de palavras
         estimate = estimate_time(text)
-        print_msg(f"Estimativa de tempo {estimate}")
+        print_msg("Estimativa de tempo {:.2f}".format(estimate))
 
         # Divide o texto em partes se o tempo for superior a 3 minutos
         parts = 1 if int(estimate//180) <= 1 else int(estimate//180)
@@ -92,10 +103,20 @@ def main():
                                                         i+1, 
                                                         len(paragraphs))
             
+            generated_videos = []
             # Exporta o video pronto
+            output_filename = f'{output_path}/output_part_{i+1}.mp4'
             export_single(video_with_subtitles, 
                         narration_audio.duration, 
-                        f'{output_path}/output_part_{i+1}.mp4')
+                        output_filename)
+            generated_videos.append({'video':output_filename})
+            
+        # Salvar os detalhes do vídeo no arquivo JSON
+        video_data = {
+            'title': selected_story['title'],
+            'videos': generated_videos
+        }
+        save_to_json(video_data)
             
         
         remove_tmp() # Remove arquivos temporários
