@@ -19,11 +19,10 @@ def main():
 
     while True:
         selected_story = None
-        choice = select_story()
-        if choice:
-            if choice[0] == 'video':
-                print(choice[1]['videos'])
-                choice[1]['videos'].sort(key=lambda x:x['video'])
+        choice = selection_menu()
+        if choice: # Caso a escolha seja válida processe 
+            if choice[0] == 'video': # Se a escolha for um vídeo do registro
+                choice[1]['videos'].sort(key=lambda x:x['video']) # Ordena os videos existentes
                 i = 1
                 for v in choice[1]['videos']:
                     print(f"Caminho para parte {i}: {v['video']}")

@@ -26,7 +26,7 @@ def set_gender():
             print("Escolha 1 ou 2")
 
 # Menu de escolha da história
-def select_story():
+def selection_menu():
     print("Selecione uma história para processar:")
     print("1. Escolher entre os 10 posts mais populares")
     print("2. Escolher entre 10 posts aleatórios entre os 500 mais populares")
