@@ -58,3 +58,10 @@ Credenciais de acesso a esse serviços sáo necessárias (todos os serviços tem
     ```
 
 Na primeira execução serão configuradas as credenciais Reddit, Assembly.ai e AWS
+
+## Outras configurações
+O script possui listas de palavrões (config/profanities.json) e siglas (config/acronyms.json) que podem ser ajustadas para correção automática do texto. 
+
+Há também uma lista de videos do youtube (config/videos.json) para plano de fundo (sem copyright ou comentários, com tempo minimo de 3 minutos), que também pode ser ajustada de acordo com a necessidade.
+
+As vozes em config/voices.json são uma questão pessoal, mas todas as vozes disponíveis podem ser utilizadas. 
