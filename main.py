@@ -22,9 +22,13 @@ def main():
         choice = select_story()
         if choice:
             if choice[0] == 'video':
-                for i in range(len(choice[1]['videos'])):
-                    for j in range(len(choice[1]['videos'][i])):
-                        print(f"Caminho para parte {i+1}: {choice[1]['videos'][j]}")
+                print(choice[1]['videos'])
+                choice[1]['videos'].sort(key=lambda x:x['video'])
+                i = 1
+                for v in choice[1]['videos']:
+                    print(f"Caminho para parte {i}: {v['video']}")
+                    i+=1
+                input("Pressione ENTER para continuar")
                 continue
             else:
                 selected_story = choice[1]
@@ -109,20 +113,20 @@ def main():
             export_single(video_with_subtitles, 
                         narration_audio.duration, 
                         output_filename)
-            generated_videos.append({'video':output_filename})
-            
+        
+        remove_tmp() # Remove arquivos temporários
+        
+        for filename in os.listdir(output_path):
+            filepath = f'{output_path}/{filename}'
+            print(f"Arquivo {filepath} gerado")
+            generated_videos.append({'video':filepath})
+
         # Salvar os detalhes do vídeo no arquivo JSON
         video_data = {
             'title': selected_story['title'],
             'videos': generated_videos
         }
         save_to_json(video_data)
-            
-        
-        remove_tmp() # Remove arquivos temporários
-        
-        for filename in os.listdir(output_path):
-            print(f"Arquivo {output_path}/{filename} gerado")
         
 
         notify()
