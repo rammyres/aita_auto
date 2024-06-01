@@ -1,0 +1,44 @@
+{
+    "subreddits": [
+        {
+            "name": "amitheasshole",
+            "description": "Am I The Asshole"
+        },
+        {
+            "name": "entitledpeople",
+            "description": "Entitled People"
+        },
+        {
+            "name": "relationships",
+            "description": "A community to discuss and get advice on relationships."
+        },
+        {
+            "name": "tifu",
+            "description": "Today I Fucked Up is a community for sharing personal stories of mistakes."
+        },
+        {
+            "name": "nosleep",
+            "description": "A place for horror stories and fictional tales that will keep you awake."
+        },
+        {
+            "name": "prorevenge",
+            "description": "A subreddit for sharing stories of epic revenge."
+        },
+        {
+            "name": "MaliciousCompliance",
+            "description": "Stories about people following instructions to the letter but in unexpected ways."
+        },
+        {
+            "name": "entitledparents",
+            "description": "Stories of parents who believe their children are entitled to everything."
+        },
+        {
+            "name": "Jokes",
+            "description": "A place for sharing jokes and funny anecdotes."
+        },
+        {
+            "name": "TalesFromRetail",
+            "description": "Stories from people who work in retail."
+        }
+    ]
+}

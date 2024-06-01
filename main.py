@@ -4,7 +4,7 @@ from lib.video_utils import *
 from lib.subtitles_utils import *
 from lib.file_utils import *
 from lib.audio_utils import *
-from lib.interface_utils import select_story
+from lib.interface_utils import selection_menu
 from lib.data_utils import save_to_json
 import moviepy.editor as mp
 import uuid, gc, os
@@ -82,8 +82,6 @@ def main():
         # Carregar vídeo de gameplay
         gameplay_video = mp.VideoFileClip("tmp/__yt1__.mp4")
 
-        print_msg(f'Video em 1 parte (tempo estimado de {estimate}s), processando...' if len(paragraphs) == 1 else f'Video em {len(paragraphs)} partes, processando as partes')
-
         # Preparar diretório de saída do do vídeo pronto
         output_path = f'output/{uuid.uuid4()}'
         os.mkdir(output_path)
@@ -92,6 +90,7 @@ def main():
         for i in range(len(paragraphs)):
             # Cria o clipe de narração para inclusão do video a partir do audio gerado pela Polly
             narration_audio = mp.AudioFileClip(f"{audio_path}/__part_{i}__.mp3") 
+            print_msg(f'Video em 1 parte (tempo de {narration_audio.duration}s), processando...' if len(paragraphs) == 1 else f'Parte em {i+1} processamento, tempo total {narration_audio.duration}')
             video_with_audio = gameplay_video.set_audio(narration_audio) # Inclui o áudio no video de fundo
             print_msg("Formatando para o formato do tiktok") 
             formatted_video = format_video_to_9x16(video_with_audio) # Recorta o vídeo para o formato 9x16
@@ -118,7 +117,7 @@ def main():
         for filename in os.listdir(output_path):
             filepath = f'{output_path}/{filename}'
             print(f"Arquivo {filepath} gerado")
-            generated_videos.append({'video':filepath})
+            generated_videos.append({'video':filepath}) # Gera referência do caminho do ultimo video gerado
 
         # Salvar os detalhes do vídeo no arquivo JSON
         video_data = {
@@ -126,9 +125,12 @@ def main():
             'videos': generated_videos
         }
         save_to_json(video_data)
-        
 
-        notify()
+        with open(f"{output_path}/fulltext.txt", 'w') as fp:
+            fp.write(text)
+        
+        notify() # Toca uma notificação ao fim do processamento da tarefa de geração atual
+
         input("Pressione ENTER para continuar")
         gc.collect()
 
