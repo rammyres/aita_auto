@@ -32,7 +32,6 @@ def add_subtitles_to_video(video, subtitles, part, total_parts):
 
 def split_video(video, total_duration, segment_duration):
     segments = []
-    # total_duration = mp.AudioFileClip(narration).duration  # Duração total do vídeo
     
     # Verificar se segment_duration é maior que a duração do vídeo
     if segment_duration > total_duration:

@@ -90,7 +90,7 @@ def main():
         for i in range(len(paragraphs)):
             # Cria o clipe de narração para inclusão do video a partir do audio gerado pela Polly
             narration_audio = mp.AudioFileClip(f"{audio_path}/__part_{i}__.mp3") 
-            print_msg(f'Video em 1 parte (tempo de {narration_audio.duration}s), processando...' if len(paragraphs) == 1 else f'Parte em {i+1} processamento, tempo total {narration_audio.duration}')
+            print_msg(f'Video em 1 parte (tempo de {narration_audio.duration:.2f}s), processando...' if len(paragraphs) == 1 else f'Parte em {i+1} processamento, tempo total {narration_audio.duration:.2f}s')
             video_with_audio = gameplay_video.set_audio(narration_audio) # Inclui o áudio no video de fundo
             print_msg("Formatando para o formato do tiktok") 
             formatted_video = format_video_to_9x16(video_with_audio) # Recorta o vídeo para o formato 9x16

@@ -1,5 +1,5 @@
 from lib.reddit_utils import *
-from lib.data_utils import *
+from lib.data_utils import list_videos, delete_video
 import json
 
 def print_msg(msg):
@@ -44,13 +44,14 @@ def set_subreddit():
     with open('config/subreddits.json') as f:
         subreddits = json.load(f)['subreddits']
         
-    print("Escolha o subreddit ou outra opção:")
-    for i, subreddit in enumerate(subreddits):
-        print(f"{i + 1} - {subreddit['name']} | {subreddit['description']}")
-    print(f"{len(subreddits) + 1} - Listar vídeos existentes")
-    print("99 - Sair")
-
     while True:
+        print("Escolha o subreddit ou outra opção:")
+        for i, subreddit in enumerate(subreddits):
+            print(f"{i + 1} - {subreddit['name']} | {subreddit['description']}")
+        print(f"{len(subreddits) + 1} - Listar vídeos existentes")
+        print(f"{len(subreddits)+2} - Excluir videos existentes")
+        print("99 - Sair")
+
         try:
             choice = int(input("Escolha a opção desejada: "))
             if 1 <= choice <= len(subreddits):
@@ -65,7 +66,21 @@ def set_subreddit():
                     return ['video', video_paths[video_choice]]
                 else:
                     print("Nenhum vídeo disponível.")
-                    return None
+                    input("Pressione ENTER para continuar")
+                    continue
+            elif choice == len(subreddits)+2:
+                # Listar vídeos e excluir o selecionado
+                videos = list_videos()
+                if videos:
+                    for idx, video in enumerate(videos):
+                        print(f"{idx}. {video['title']}")
+                    delete_index = int(input("Escolha o índice do vídeo para deletar: "))
+                    delete_video(delete_index)
+                    print("Vídeo deletado com sucesso.")
+                else:
+                    print("Nenhum vídeo encontrado.")
+                input("Pressione ENTER para continuar")
+                continue
             elif choice == 99:
                 print("Encerrando...")
                 quit()

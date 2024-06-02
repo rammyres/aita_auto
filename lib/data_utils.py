@@ -30,3 +30,34 @@ def list_videos(filepath=database_path):
                 return []
     else:
         return []
+    
+def delete_video(index, filepath=database_path):
+    if os.path.exists(filepath):
+        with open(filepath, 'r') as f:
+            try:
+                data = json.load(f)
+            except json.JSONDecodeError:
+                print("Erro ao ler o arquivo JSON.")
+                return
+        
+        if 0 <= index < len(data):
+            # Deletar os arquivos de vídeo referenciados
+            video_data = data.pop(index)
+            for video in video_data['videos']:
+                video_path = video['video']
+                if os.path.exists(video_path):
+                    os.remove(video_path)
+                    print(f"Arquivo {video_path} deletado.")
+                else:
+                    print(f"Arquivo {video_path} não encontrado.")
+
+            # Salvar os dados atualizados no JSON
+            with open(filepath, 'w') as f:
+                json.dump(data, f, indent=4)
+            
+            print("Vídeo e dados deletados com sucesso.")
+            return
+        else:
+            print("Índice inválido.")
+    else:
+        print("Arquivo JSON não encontrado.")

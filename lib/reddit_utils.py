@@ -9,6 +9,7 @@ def estimate_time(text):
     return (len(text.split())/150)*60
 
 def merge_accidental_splits(text):
+    common_combinations = {"to be", "to me", "in to", "on to"}
     words = word_tokenize(text)
     corrected_words = []
     skip_next = False
@@ -18,13 +19,18 @@ def merge_accidental_splits(text):
             skip_next = False
             continue
         
-        # Unir palavras separadas acidentalmente
-        combined_word = words[i] + words[i + 1]
-        if combined_word.lower() in nltk.corpus.words.words():
-            corrected_words.append(combined_word)
-            skip_next = True
-        else:
+        # Verificar se a combinação está na lista de combinações comuns
+        combined_phrase = words[i] + ' ' + words[i + 1]
+        if combined_phrase in common_combinations:
             corrected_words.append(words[i])
+        else:
+            # Unir palavras separadas acidentalmente
+            combined_word = words[i] + words[i + 1]
+            if combined_word.lower() in nltk.corpus.words.words():
+                corrected_words.append(combined_word)
+                skip_next = True
+            else:
+                corrected_words.append(words[i])
     
     if not skip_next:
         corrected_words.append(words[-1])
@@ -218,7 +224,7 @@ def prepare_text(text):
     # Remove urls do texto
     text = re.sub(r"http\S+", "", text)
 
-    text = repair_broken_words(text)
+    # text = repair_broken_words(text)
 
     # Usa NLTK para verificar se algum palavrão escapou
     words = word_tokenize(text) # Transforma o texto em tokens
