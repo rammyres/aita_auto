@@ -9,7 +9,10 @@ def estimate_time(text):
     return (len(text.split())/150)*60
 
 def merge_accidental_splits(text):
-    common_combinations = {"to be", "to me", "in to", "on to"}
+    common_combinations = []
+    with open('config/common_combinations.json') as f:
+        common_combinations = json.load(f)['combinations']
+    
     words = word_tokenize(text)
     corrected_words = []
     skip_next = False
@@ -223,6 +226,9 @@ def prepare_text(text):
 
     # Remove urls do texto
     text = re.sub(r"http\S+", "", text)
+
+    # Remove #x200b do texto 
+    text = re.sub(r'&\s*#\s*x200B', '', text)
 
     # text = repair_broken_words(text)
 

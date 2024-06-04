@@ -74,9 +74,13 @@ def set_subreddit():
                 if videos:
                     for idx, video in enumerate(videos):
                         print(f"{idx}. {video['title']}")
+                    print(f"{len(videos)+1} - Voltar")
                     delete_index = int(input("Escolha o índice do vídeo para deletar: "))
-                    delete_video(delete_index)
-                    print("Vídeo deletado com sucesso.")
+                    if delete_index == len(videos)+1:
+                        continue
+                    else:
+                        delete_video(delete_index)
+                        print("Vídeo deletado com sucesso.")
                 else:
                     print("Nenhum vídeo encontrado.")
                 input("Pressione ENTER para continuar")
