@@ -1,6 +1,7 @@
 import praw, json, re, random
 from lib.config_utils import *
 import nltk
+from mysutils.text import remove_urls
 from nltk.tokenize import word_tokenize, sent_tokenize
 # import spacy, contextualSpellCheck
 
@@ -225,7 +226,8 @@ def prepare_text(text):
     text = re.sub(pattern, "'", text)
 
     # Remove urls do texto
-    text = re.sub(r"http\S+", "", text)
+    # text = re.sub(r"http\S+", "", text)
+    remove_urls(text)
 
     # Remove #x200b do texto 
     text = re.sub(r'&\s*#\s*x200B', '', text)
