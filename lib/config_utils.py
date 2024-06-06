@@ -1,4 +1,5 @@
-import configparser, os
+import configparser
+import os
 
 # Caminho para o arquivo de configuração
 reddit_config_file = os.path.join(os.path.dirname(__file__),'..','config', 'reddit_config.ini')
@@ -20,7 +21,7 @@ def check_reddit_config():
         config.set('reddit','client_secret', client_secret)
         config.set('reddit','user_agent', user_agent)
 
-        with open(reddit_config_file, 'w+') as f:
+        with open(reddit_config_file, 'w+', encoding="utf-8") as f:
             config.write(f)
             print("Arquivo de configuração escrito\n Se você estiver usando github inclua suas credenciais no .gitignore!")
 
