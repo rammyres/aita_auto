@@ -23,7 +23,7 @@ def check_reddit_config():
 
         with open(reddit_config_file, 'w+', encoding="utf-8") as f:
             config.write(f)
-            print("Arquivo de configuração escrito\n Se você estiver usando github inclua suas credenciais no .gitignore!")
+            print("Arquivo de configuração escrito\n Se você estiver usando um repositório git inclua suas credenciais no .gitignore!")
 
 # Função para carregar configurações do Reddit
 def load_reddit_config():
@@ -48,7 +48,7 @@ def check_aii_config():
 
         with open(aai_config_file, 'w+') as f:
             config.write(f)
-            print("Arquivo de configuração escrito\n Se você estiver usando github inclua suas credenciais no .gitignore!")
+            print("Arquivo de configuração escrito\n Se você estiver usando um repositório git inclua suas credenciais no .gitignore!")
 
 def get_aai_key():
     config_file = os.path.join(os.path.dirname(__file__),'..','config', 'aai.ini')
@@ -70,7 +70,7 @@ def check_aws_config():
 
         with open(aai_config_file, 'w+') as f:
             config.write(f)
-            print("Arquivo de configuração escrito\n Se você estiver usando github inclua suas credenciais no .gitignore!")
+            print("Arquivo de configuração escrito\n Se você estiver usando um repositório git inclua suas credenciais no .gitignore!")
 
 def check_configs():
     print("Verificando arquivos de configuração...")
