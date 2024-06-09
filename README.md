@@ -48,10 +48,33 @@ Credenciais de acesso a esse serviços sáo necessárias (todos os serviços tem
     ```sh
     pip install -r requirements.txt
     ```
-3. Instale o modelo de correção de texto 
-    ```sh
-    python -m spacy download en_core_web_lg
+3. Instale o ffmpeg (de acordo com sua distribuição)
+    - Debian/Ubuntu 
     ```
+    $ sudo apt install ffmpeg
+    ```
+    
+    - CentOS/RedHat
+    ```
+    sudo yum install ffmpeg ffmpeg-devel
+
+    ```
+    
+    - Arch Linux
+    ```
+    sudo pacman -S ffmpeg
+    ```
+
+    - OpenSUSE
+    ```
+    sudo zypper install ffmpeg-4
+    ```
+
+    - Gentoo
+    ```
+    sudo emerge --ask media-video/ffmpeg
+    ```
+
 4. Execute o script main:
     ```sh
     python main.py
