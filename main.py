@@ -6,11 +6,14 @@ from lib.file_utils import *
 from lib.audio_utils import *
 from lib.interface_utils import selection_menu
 from lib.data_utils import save_to_json
+from lib.config_utils import *
 import moviepy.editor as mp
 import uuid, gc, os
 
 # Função principal
 def main():
+    check_requirements('requirements.txt')
+    
     # Verifica se os arquivos de configuração estão disponíveis e os cria se não estiverem
     # Os arquivos criados são para os serviços aws, aai e reddit
     check_configs()

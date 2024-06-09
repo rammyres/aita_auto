@@ -78,3 +78,30 @@ def check_configs():
     check_aii_config()
     check_aws_config()
 
+import subprocess
+import sys
+import pkg_resources
+
+def check_requirements(requirements_file):
+    with open(requirements_file, 'r') as f:
+        requirements = f.readlines()
+
+    # Obter os pacotes instalados
+    installed_packages = {pkg.key for pkg in pkg_resources.working_set}
+
+    missing_packages = []
+
+    for requirement in requirements:
+        package_name = requirement.strip().split('==')[0]
+        if package_name not in installed_packages:
+            missing_packages.append(requirement.strip())
+
+    if missing_packages:
+        print("Os seguintes pacotes estão faltando:")
+        for pkg in missing_packages:
+            print(pkg)
+        
+        install = input("Deseja instalar os pacotes faltantes? (s/n): ").strip().lower()
+        if install == 's':
+            subprocess.check_call([sys.executable, '-m', 'pip', 'install', '-r', requirements_file])
+
