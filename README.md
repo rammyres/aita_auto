@@ -32,8 +32,8 @@ Credenciais de acesso a esse serviços sáo necessárias (todos os serviços tem
   - assemblyai
   - pydub
   - playsound
-  - spacy
-  - contextualSpellCheck
+  - nltk
+  - mysmallutils==2.0.20
 
 ## Instalação
 
@@ -51,7 +51,7 @@ Credenciais de acesso a esse serviços sáo necessárias (todos os serviços tem
 3. Instale o ffmpeg (de acordo com sua distribuição)
     - Debian/Ubuntu 
     ```
-    $ sudo apt install ffmpeg
+    sudo apt install ffmpeg
     ```
     
     - CentOS/RedHat
