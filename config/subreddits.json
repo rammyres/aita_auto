@@ -13,6 +13,10 @@
             "description": "A community to discuss and get advice on relationships."
         },
         {
+            "name": "Relationship_Advice",
+            "description":"Need help with your relationship? Whether it's romance, friendship, family, co-workers, or basic human interaction: we're here to help!"
+        },
+        {
             "name": "tifu",
             "description": "Today I Fucked Up is a community for sharing personal stories of mistakes."
         },
@@ -39,6 +43,10 @@
         {
             "name": "TalesFromRetail",
             "description": "Stories from people who work in retail."
+        },
+        {
+            "name": "TrueOffMyChest",
+            "description":"TrueOffMyChest, a place for people who need to speak their mind"
         }
     ]
 }

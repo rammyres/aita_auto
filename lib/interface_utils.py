@@ -139,6 +139,7 @@ def selection_menu():
     print("2. Escolher entre 10 posts aleatórios entre os 500 mais populares")
     print("3. Escolher entre 10 posts aleatórios entre os 100 mais populares da última semana")
     print("4. Inserir URL de um post específico")
+    print("99. Voltar para o menu inicial")
 
     while True:
         try:
@@ -195,6 +196,10 @@ def selection_menu():
                 else:
                     print("URL inválida ou post não encontrado.")
                     return None
+            
+            elif choice == 99:
+                # Volta para o menu inicial
+                break
 
             else:
                 print("Opção inválida.")

@@ -1,6 +1,6 @@
-import praw, json, re, random
+import praw, json, re, random, nltk
 from lib.config_utils import *
-import nltk
+from tqdm import tqdm
 from mysutils.text import remove_urls
 from nltk.tokenize import word_tokenize, sent_tokenize
 # import spacy, contextualSpellCheck
@@ -40,51 +40,6 @@ def merge_accidental_splits(text):
         corrected_words.append(words[-1])
     
     return ' '.join(corrected_words)
-
-def repair_broken_words(text):
-    # Repair hyphenated line breaks
-    repaired_text = re.sub(r'-\n\s*', '', text)
-    # Repair line breaks without hyphens (if they occur within words)
-    repaired_text = re.sub(r'(\S)\n(\S)', r'\1\2', repaired_text)
-    # Repair common contraction splits
-    contractions = [
-        (r'\bwas\s+n\'t\b', "wasn't"),
-        (r'\bwh\s+o\'s\b', "who's"),
-        (r'\bcan\s+n\'t\b', "can't"),
-        (r'\bdo\s+n\'t\b', "don't"),
-        (r'\bdoes\s+n\'t\b', "doesn't"),
-        (r'\bdid\s+n\'t\b', "didn't"),
-        (r'\bshould\s+n\'t\b', "shouldn't"),
-        (r'\bwould\s+n\'t\b', "wouldn't"),
-        (r'\bcould\s+n\'t\b', "couldn't"),
-        (r'\bhe\s+is\b', "he's"),
-        (r'\bshe\s+is\b', "she's"),
-        (r'\bit\s+is\b', "it's"),
-        (r'\bthat\s+is\b', "that's"),
-        (r'\bthere\s+is\b', "there's"),
-        (r'\bwhat\s+is\b', "what's"),
-        (r'\bwhere\s+is\b', "where's"),
-        (r'\bwho\s+is\b', "who's"),
-        (r'\bwe\s+are\b', "we're"),
-        (r'\byou\s+are\b', "you're"),
-        (r'\bthey\s+are\b', "they're"),
-        (r'\bi\s+am\b', "I'm"),
-        (r'\bwe\s+will\b', "we'll"),
-        (r'\byou\s+will\b', "you'll"),
-        (r'\bthey\s+will\b', "they'll"),
-        (r'\bhe\s+will\b', "he'll"),
-        (r'\bshe\s+will\b', "she'll"),
-        (r'\bit\s+will\b', "it'll"),
-        (r'\bthat\s+will\b', "that'll"),
-        (r'\bthere\s+will\b', "there'll"),
-        (r'\bwhat\s+will\b', "what'll"),
-        (r'\bwhere\s+will\b', "where'll"),
-        (r'\bwho\s+will\b', "who'll")
-    ]
-    for pattern, replacement in contractions:
-        repaired_text = re.sub(pattern, replacement, repaired_text, flags=re.IGNORECASE)
-
-    return repaired_text
 
 
 # Divide o tempo em segmentos para narração
@@ -196,50 +151,64 @@ def get_random_recent_stories(sub_name = 'amitheasshole', num_posts=10):
     return stories
 
 def prepare_text(text):
-    """
-    Esta função preprocessa o texto para remover
-    clutter (simbolos indevidos, urls) e também
-    remove palavrões comuns, substituindo por 
-    eufemismos e troca siglas pelos seus signi-
-    ficados.
-    """
+    print("Removendo tags")
+    # Remove HTML tags
+    text = re.sub(r'<[^>]*>', '', text)
+    
+    print("Ajustando contrações comuns")
+    # List of common contractions
+    contractions = dict()
+    with open('config/contractions.json') as f:
+        contractions = json.load(f)
+    
+    # Repair contractions
+    for contraction, replacement in tqdm(contractions.items()):
+        text = re.sub(re.escape(contraction), replacement, text)
 
-    text = merge_accidental_splits(text)
-    # Substitui palavrões pelos eufemismos
-    profanities_dict = dict()
-    with open("config/profanities.json") as file:
-        profanities_dict = json.load(file)
     
-    for k, v in profanities_dict.items():
-        text = re.sub(rf'\b{k}\b', v, text)
+    print("Removendo espaços em palavras")
+    # Remove unwanted single character spaces (e.g., "e xample" -> "example")
+    text = re.sub(r'(\b\w) (\w\b)', r'\1\2', text)
     
-    # Substitui siglas pela seus significados:
+    print("Quebrando texto unido por engano")
+    # Insert a space between joined words (e.g., "exampleanother" -> "example another")
+    text = re.sub(r'(\w)([A-Z][a-z])', r'\1 \2', text)
+
+    print("Removendo texto invisível")
+    # Remove #x200b do texto 
+    text = re.sub(r'&\s*#\s*x200B', '', text)
+    text = re.sub(r'\s*x200B', '', text)
+    text = text.replace('\u200b', '').replace('#x200b', '')
+
+    print("Trocando siglas pelos seus significados")
+    # Troca siglas pelos seus significados
     acronyms_dict = dict()
     with open('config/acronyms.json', 'r') as file:
         acronyms_dict = json.load(file)
 
-    for k, v in acronyms_dict.items():
+    for k, v in tqdm(acronyms_dict.items()):
         text = re.sub(rf'\b{k}\b', v, text)
-    
-    # Retira caracteres indesejados
-    pattern = r"\s*’\s*"
-    text = re.sub(pattern, "'", text)
 
-    # Remove urls do texto
-    # text = re.sub(r"http\S+", "", text)
+    print("Removendo palavrões")
+    # Remove palavrões e troca por eufemismos
+    profanities = dict()
+    with open('config/profanities.json') as f:
+        profanities = json.load(f)
+    
+    for profanity, replacement in tqdm(profanities.items()):
+        text = re.sub(r'\b' + re.escape(profanity) + r'\b', replacement, text, flags=re.IGNORECASE)
+
+    print("Unindo textos indevidamente quebrados pelos processos anteriores")
+    # List of common combiantions
+    common_combinations = dict()
+    with open('config/common_combinations.json') as f:
+        common_combinations = json.load(f)
+    
+    # Repair common combinations
+    for combination, replacement in tqdm(common_combinations.items()):
+        text = re.sub(re.escape(combination), replacement, text)
+    
+    print("Removendo URLs")
     remove_urls(text)
 
-    # Remove #x200b do texto 
-    text = re.sub(r'&\s*#\s*x200B', '', text)
-
-    # text = repair_broken_words(text)
-
-    # Usa NLTK para verificar se algum palavrão escapou
-    words = word_tokenize(text) # Transforma o texto em tokens
-
-    cleaned_words = [profanities_dict.get(word.lower(), word) for word in words]
-    
-    # Reconstroi o texto
-    cleaned_text = ' '.join(cleaned_words)
-    
-    return cleaned_text
+    return text

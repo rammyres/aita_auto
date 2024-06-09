@@ -43,13 +43,20 @@ def delete_video(index, filepath=database_path):
         if 0 <= index < len(data):
             # Deletar os arquivos de vídeo referenciados
             video_data = data.pop(index)
+            folder = ''
             for video in video_data['videos']:
                 video_path = video['video']
+                folder = video_path.split('/') # atualiza a pasta para posterior deleção
                 if os.path.exists(video_path):
                     os.remove(video_path)
                     print(f"Arquivo {video_path} deletado.")
                 else:
                     print(f"Arquivo {video_path} não encontrado.")
+
+            # monta o caminho para a pasta
+            folderpath = os.path.join(*[fp for fp in folder[:-1]])
+            os.remove(f'{folderpath}/fulltext.txt') # remove o arquivo do texto da história
+            os.removedirs(folderpath) # apaga a pasta
 
             # Salvar os dados atualizados no JSON
             with open(filepath, 'w') as f:
