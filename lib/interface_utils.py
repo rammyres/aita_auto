@@ -74,9 +74,9 @@ def set_subreddit():
                 if videos:
                     for idx, video in enumerate(videos):
                         print(f"{idx}. {video['title']}")
-                    print(f"{len(videos)+1} - Voltar")
+                    print("99 - Voltar")
                     delete_index = int(input("Escolha o índice do vídeo para deletar: "))
-                    if delete_index == len(videos)+1:
+                    if delete_index == 99:
                         continue
                     else:
                         delete_video(delete_index)

@@ -48,31 +48,32 @@ Credenciais de acesso a esse serviços sáo necessárias (todos os serviços tem
     ```sh
     pip install -r requirements.txt
     ```
-3. Instale o ffmpeg (de acordo com sua distribuição)
+3. Instale o ffmpeg e o Image Magick (de acordo com sua distribuição)
     - Debian/Ubuntu 
     ```
-    sudo apt install ffmpeg
+    sudo apt install ffmpeg imagemagick
     ```
 
     - CentOS/RedHat
     ```
-    sudo yum install ffmpeg ffmpeg-devel
+    sudo yum install ffmpeg ffmpeg-devel imagemagick
 
     ```
-    
+
     - Arch Linux
     ```
-    sudo pacman -S ffmpeg
+    sudo pacman -S ffmpeg imagemagick
     ```
 
     - OpenSUSE
     ```
-    sudo zypper install ffmpeg-4
+    sudo zypper install ffmpeg-4 ImageMagick
     ```
 
     - Gentoo
     ```
-    sudo emerge --ask media-video/ffmpeg
+    sudo emerge --ask media-video/ffmpeg 
+    sudo emerge --ask media-gfx/imagemagick
     ```
 
 4. Execute o script main:
