@@ -68,7 +68,7 @@ def check_aws_config():
         config.set('default','aws_access_key_id', aws_id)
         config.set('default', 'aws_secret_access_key', aws_key)
         
-        aws_dir = os.path.join("~",".aws")
+        aws_dir = os.path.join(os.path.expanduser('~'),".aws")
         os.mkdir(aws_dir)
 
         with open(aws_config_file, 'w+') as f:
