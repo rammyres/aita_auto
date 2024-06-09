@@ -60,15 +60,18 @@ def check_aws_config():
     if not os.path.exists(aws_config_file):
         config = configparser.ConfigParser()
         
-        print("O arquivo de configuração da Assembly.ai não existe")
+        print("O arquivo de configuração da AWS não existe")
         aws_id = input("Insiera a id de acesso (aws access key id): ")
         aws_key = input("Insira a chave de acesso (aws access secret key): ")
         
         config.add_section('default')
         config.set('default','aws_access_key_id', aws_id)
         config.set('default', 'aws_secret_access_key', aws_key)
+        
+        aws_dir = os.path.join("~",".aws")
+        os.mkdir(aws_dir)
 
-        with open(aai_config_file, 'w+') as f:
+        with open(aws_config_file, 'w+') as f:
             config.write(f)
             print("Arquivo de configuração escrito\n Se você estiver usando um repositório git inclua suas credenciais no .gitignore!")
 
