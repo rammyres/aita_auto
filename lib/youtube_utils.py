@@ -1,5 +1,4 @@
 import os, yt_dlp, json, random
-from pytube import YouTube
 
 def rename(directory, new_name):
     # Verifica se o diretório existe
