@@ -47,13 +47,16 @@ def get_random_background_video():
 #     return output_dir
 
 def download_youtube_video(youtube_url, output_dir='tmp'):
-    ydl_opts = {
-        'format': 'bestvideo[ext=mp4][height<=1080]+bestaudio[ext=m4a]/best[ext=mp4][height<=1080]',
-        'outtmpl': f'{output_dir}/__yt1__.mp4',
-        'merge_output_format': 'mp4'
-    }
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        ydl.download([youtube_url])
+    try:
+        ydl_opts = {
+            'format': 'bestvideo[ext=mp4][height<=1080]+bestaudio[ext=m4a]/best[ext=mp4][height<=1080]',
+            'outtmpl': f'{output_dir}/__yt1__.mp4',
+            'merge_output_format': 'mp4'
+        }
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            ydl.download([youtube_url])
+    except yt_dlp.utils.DownloadError:
+        print("O ffmpeg não está instalado! Instale conforme sua distribuição")
 
     # for file in os.listdir(output_dir):
     #     if file.startswith('__yt1__') and not file.endswith('.mp4'):
