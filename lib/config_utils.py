@@ -43,8 +43,8 @@ def check_aii_config():
         print("O arquivo de configuração da Assembly.ai não existe")
         key = input("Insira a key: ")
         
-        config.add_section('aai')
-        config.set('aai','KEY', key)
+        config.add_section('aai_settings')
+        config.set('aai_settings','KEY', key)
 
         with open(aai_config_file, 'w+') as f:
             config.write(f)

@@ -53,7 +53,7 @@ Credenciais de acesso a esse serviços sáo necessárias (todos os serviços tem
     ```
     sudo apt install ffmpeg
     ```
-    
+
     - CentOS/RedHat
     ```
     sudo yum install ffmpeg ffmpeg-devel
