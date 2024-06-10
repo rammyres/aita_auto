@@ -6,7 +6,7 @@ from lib.interface_utils import *
 from lib.config_utils import get_aai_key
 
 def generate_subtitles(narration_file, output_file):
-    config = aai.TranscriptionConfig(speech_model=aai.SpeechModel.best)
+    config = aai.TranscriptionConfig(speech_model=aai.SpeechModel.best, punctuate=True, format_text=True)
     aai.settings.api_key = get_aai_key()
     transcriber = aai.Transcriber(config=config)
 

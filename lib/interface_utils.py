@@ -13,16 +13,36 @@ def print_msg(msg):
     print(msg)
     print("==================##################==================")
 
-def set_gender():
+def suggest_gender(text):
+    pattern = re.compile(r'(\d+[mfMF]|[mfMF]\d+)')
+    match = pattern.search(text)
+    if match:
+        grupo = match.group(0)
+        if grupo[-1].lower() in 'mf':
+            sexo = grupo[-1].lower()
+        else:
+            sexo = grupo[0].lower()
+        
+        if sexo == 'm':
+            return 'masculino'
+        elif sexo == 'f':
+            return 'feminino'
+    return None
+
+def set_gender(text):
     """
     Solicita ao usuário para definir o gênero do narrador.
 
     Returns:
     str: 'male' para masculino ou 'female' para feminino.
     """
+    
     while True:
         try:
             print("Qual o gênero do narrador? ")
+            gender = suggest_gender(text)
+            if gender:
+                print(f"Genero sugerido: {gender}")
             gender_input = input("1-Masc./2-Fem.: ")
             
             if int(gender_input) == 1:
@@ -205,3 +225,6 @@ def selection_menu():
                 print("Opção inválida.")
         except ValueError:
             print("Escolha uma opção numérica")
+
+def cls():
+    os.system('cls' if os.name=='nt' else 'clear')

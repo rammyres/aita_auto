@@ -56,7 +56,7 @@ Credenciais de acesso a esse serviços sáo necessárias (todos os serviços tem
 
     - CentOS/RedHat
     ```
-    sudo yum install ffmpeg ffmpeg-devel imagemagick
+    sudo yum install ffmpeg ffmpeg-devel ImageMagick ImageMagick-devel
 
     ```
 

@@ -19,7 +19,7 @@ def main():
     check_configs()
     os.environ["TOKENIZERS_PARALLELISM"] = "false" # Disabilita paralelismo para uso do BeRT
                                                    # na verificação ortográfica 
-
+    cls()
     while True:
         selected_story = None
         choice = selection_menu()
@@ -43,14 +43,14 @@ def main():
         audio_path = 'tmp/audio'
         mk_dirs()
 
+        unclean_text = selected_story['title'] + ". " + selected_story['text']
+        
         # Escolhe o sexo do narrador
-        voice = get_random_voice(set_gender())
+        voice = get_random_voice(set_gender(unclean_text))
         print_msg(f"Voz escolhida: {voice}")
 
         # Gerar narração
         print_msg("Preparando narração, aguarde...")
-
-        unclean_text = selected_story['title'] + ". " + selected_story['text']
         text = prepare_text(unclean_text)
 
         paragraphs = []

@@ -3,11 +3,12 @@ from lib.config_utils import *
 from tqdm import tqdm
 from mysutils.text import remove_urls
 from nltk.tokenize import word_tokenize, sent_tokenize
-# import spacy, contextualSpellCheck
+import pysbd
+import spacy, contextualSpellCheck
 
 # Estima o tempo da narração
 def estimate_time(text):
-    return (len(text.split())/150)*60
+    return (len(text.split())/180)*60
 
 def merge_accidental_splits(text):
     common_combinations = []
@@ -150,6 +151,26 @@ def get_random_recent_stories(sub_name = 'amitheasshole', num_posts=10):
     
     return stories
 
+def split_sentences(text):
+    seg = pysbd.Segmenter(language='en', clean=False)
+    return seg.segment(text)
+
+def spellCheck(text):
+
+    # phrases = nltk.sent_tokenize(text)
+    phrases = split_sentences(text)
+    nlp = spacy.load('en_core_web_lg')
+    contextualSpellCheck.add_to_pipe(nlp)
+    
+    for i, phrase in enumerate(phrases):
+        doc = nlp(phrase)
+        print(f'{i+1} - {phrase}')
+        if doc._.performed_spellCheck:
+            phrases[i] = doc._.outcome_spellCheck
+            print(f'{i+1} - Corrected - {phrases[i]}')
+    
+    return ' '.join(phrases)
+
 def prepare_text(text):
     print("Removendo tags")
     # Remove HTML tags
@@ -207,8 +228,12 @@ def prepare_text(text):
     # Repair common combinations
     for combination, replacement in tqdm(common_combinations.items()):
         text = re.sub(re.escape(combination), replacement, text)
-    
+
     print("Removendo URLs")
     remove_urls(text)
+
+    # print("Correção de texto por IA")
+    # text = spellCheck(text)
+    # input()
 
     return text
