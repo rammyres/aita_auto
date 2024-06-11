@@ -7,7 +7,7 @@ from lib.video_utils import *
 from lib.subtitles_utils import *
 from lib.file_utils import *
 from lib.audio_utils import *
-from lib.interface_utils import selection_menu
+from lib.interface_utils import selection_menu, cls
 from lib.data_utils import save_to_json
 import moviepy.editor as mp
 import uuid, gc, os
@@ -29,7 +29,7 @@ def main():
                 i = 1
                 for v in choice[1]['videos']:
                     print(f"Caminho para parte {i}: {v['video']}")
-                    i+=1
+                    i += 1
                 input("Pressione ENTER para continuar")
                 continue
             else:
@@ -59,9 +59,9 @@ def main():
         print_msg("Estimativa de tempo {:.2f}".format(estimate))
 
         # Divide o texto em partes se o tempo for superior a 3 minutos
-        parts = 1 if int(estimate//180) <= 1 else int(estimate//180)
-        if estimate>180.0 and parts == 1: # Certifica que o video terá pelo menos
-            parts+=1                      # 2 partes, caso seja maior que 3 minutos
+        parts = 1 if int(estimate // 180) <= 1 else int(estimate // 180)
+        if estimate > 180.0 and parts == 1: # Certifica que o video terá pelo menos
+            parts += 1                      # 2 partes, caso seja maior que 3 minutos
     
         # Prepara o texto para processamento, separando em segmentos de paragrafos
         if parts == 1:
@@ -73,7 +73,7 @@ def main():
         # Prepara a narração
         print_msg(f'Video em 1 parte, gerando narração...' if len(paragraphs) == 1 else f'Video em {len(paragraphs)} partes, processando as partes')
         for i in range(0, len(paragraphs)):
-            print_msg(f"Gerando áudio da parte {i+1}")
+            print_msg(f"Gerando áudio da parte {i + 1}")
             narration_filename = f"{audio_path}/__part_{i}__.mp3"
             text_to_speech(paragraphs[i], narration_filename, voice, "en-US", "mp3", engine='neural')
         
@@ -93,7 +93,7 @@ def main():
         for i in range(len(paragraphs)):
             # Cria o clipe de narração para inclusão do video a partir do audio gerado pela Polly
             narration_audio = mp.AudioFileClip(f"{audio_path}/__part_{i}__.mp3") 
-            print_msg(f'Video em 1 parte (tempo de {narration_audio.duration:.2f}s), processando...' if len(paragraphs) == 1 else f'Parte em {i+1} processamento, tempo total {narration_audio.duration:.2f}s')
+            print_msg(f'Video em 1 parte (tempo de {narration_audio.duration:.2f}s), processando...' if len(paragraphs) == 1 else f'Parte em {i + 1} processamento, tempo total {narration_audio.duration:.2f}s')
             video_with_audio = gameplay_video.set_audio(narration_audio) # Inclui o áudio no video de fundo
             print_msg("Formatando para o formato do tiktok") 
             formatted_video = format_video_to_9x16(video_with_audio) # Recorta o vídeo para o formato 9x16
@@ -104,23 +104,23 @@ def main():
 
             # Cria a camada de legendas e caption da parte
             video_with_subtitles = add_subtitles_to_video(formatted_video, 
-                                                        f'{subtitle_path}/__part_{i}.srt', 
-                                                        i+1, 
-                                                        len(paragraphs))
+                                                          f'{subtitle_path}/__part_{i}.srt', 
+                                                          i + 1, 
+                                                          len(paragraphs))
             
             generated_videos = []
             # Exporta o video pronto
-            output_filename = f'{output_path}/output_part_{i+1}.mp4'
+            output_filename = f'{output_path}/output_part_{i + 1}.mp4'
             export_single(video_with_subtitles, 
-                        narration_audio.duration, 
-                        output_filename)
+                          narration_audio.duration, 
+                          output_filename)
         
         remove_tmp() # Remove arquivos temporários
         
         for filename in os.listdir(output_path):
             filepath = f'{output_path}/{filename}'
             print(f"Arquivo {filepath} gerado")
-            generated_videos.append({'video':filepath}) # Gera referência do caminho do ultimo video gerado
+            generated_videos.append({'video': filepath}) # Gera referência do caminho do ultimo video gerado
 
         # Salvar os detalhes do vídeo no arquivo JSON
         video_data = {
@@ -134,7 +134,7 @@ def main():
         
         notify() # Toca uma notificação ao fim do processamento da tarefa de geração atual
 
-        input("Pressione ENTER para continuar")
+        input(term.bold("Pressione ENTER para continuar"))
         gc.collect()
 
 if __name__ == '__main__':

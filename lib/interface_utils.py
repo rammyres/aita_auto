@@ -1,6 +1,9 @@
+from blessed import Terminal
 from lib.reddit_utils import *
 from lib.data_utils import list_videos, delete_video
 import json
+
+term = Terminal()
 
 def print_msg(msg):
     """
@@ -9,9 +12,10 @@ def print_msg(msg):
     Args:
     msg (str): A mensagem a ser impressa.
     """
-    print("==================##################==================")
-    print(msg)
-    print("==================##################==================")
+    print(term.clear())
+    print(term.center("==================##################=================="))
+    print(term.center(msg))
+    print(term.center("==================##################=================="))
 
 def suggest_gender(text):
     pattern = re.compile(r'(\d+[mfMF]|[mfMF]\d+)')
@@ -39,20 +43,23 @@ def set_gender(text):
     
     while True:
         try:
-            print("Qual o gênero do narrador? ")
+            print(term.clear())
+            print(term.bold("Qual o gênero do narrador? "))
             gender = suggest_gender(text)
             if gender:
                 print(f"Genero sugerido: {gender}")
-            gender_input = input("1-Masc./2-Fem.: ")
+            print(term.bold("1 - Masculino"))
+            print(term.bold("2 - Feminino"))
+            gender_input = input(term.bold("Escolha (1/2): "))
             
             if int(gender_input) == 1:
                 return 'male'
             elif int(gender_input) == 2:
                 return 'female'
             else:
-                print("Opção inválida")
+                print(term.bold_red("Opção inválida"))
         except ValueError:
-            print("Escolha 1 ou 2")
+            print(term.bold_red("Escolha 1 ou 2"))
 
 def set_subreddit():
     """
@@ -65,15 +72,16 @@ def set_subreddit():
         subreddits = json.load(f)['subreddits']
         
     while True:
-        print("Escolha o subreddit ou outra opção:")
+        print(term.clear())
+        print(term.bold("Escolha o subreddit ou outra opção:"))
         for i, subreddit in enumerate(subreddits):
             print(f"{i + 1} - {subreddit['name']} | {subreddit['description']}")
         print(f"{len(subreddits) + 1} - Listar vídeos existentes")
-        print(f"{len(subreddits)+2} - Excluir videos existentes")
+        print(f"{len(subreddits) + 2} - Excluir vídeos existentes")
         print("99 - Sair")
 
         try:
-            choice = int(input("Escolha a opção desejada: "))
+            choice = int(input(term.bold("Escolha a opção desejada: ")))
             if 1 <= choice <= len(subreddits):
                 return subreddits[choice - 1]['name']
             elif choice == len(subreddits) + 1:
@@ -82,36 +90,36 @@ def set_subreddit():
                     print("Vídeos disponíveis:")
                     for i, video in enumerate(video_paths):
                         print(f"{i + 1}. {video['title']}")
-                    video_choice = int(input("Digite o número do vídeo desejado: ")) - 1
+                    video_choice = int(input(term.bold("Digite o número do vídeo desejado: "))) - 1
                     return ['video', video_paths[video_choice]]
                 else:
-                    print("Nenhum vídeo disponível.")
-                    input("Pressione ENTER para continuar")
+                    print(term.bold_red("Nenhum vídeo disponível."))
+                    input(term.bold("Pressione ENTER para continuar"))
                     continue
-            elif choice == len(subreddits)+2:
+            elif choice == len(subreddits) + 2:
                 # Listar vídeos e excluir o selecionado
                 videos = list_videos()
                 if videos:
                     for idx, video in enumerate(videos):
                         print(f"{idx}. {video['title']}")
                     print("99 - Voltar")
-                    delete_index = int(input("Escolha o índice do vídeo para deletar: "))
+                    delete_index = int(input(term.bold("Escolha o índice do vídeo para deletar: ")))
                     if delete_index == 99:
                         continue
                     else:
                         delete_video(delete_index)
-                        print("Vídeo deletado com sucesso.")
+                        print(term.bold_green("Vídeo deletado com sucesso."))
                 else:
-                    print("Nenhum vídeo encontrado.")
-                input("Pressione ENTER para continuar")
+                    print(term.bold_red("Nenhum vídeo encontrado."))
+                input(term.bold("Pressione ENTER para continuar"))
                 continue
             elif choice == 99:
-                print("Encerrando...")
+                print(term.bold("Encerrando..."))
                 quit()
             else:
-                print("Opção inválida")
+                print(term.bold_red("Opção inválida"))
         except ValueError:
-            print("Escolha uma opção numérica válida")
+            print(term.bold_red("Escolha uma opção numérica válida"))
 
 def is_valid_story(story):
     """
@@ -153,8 +161,8 @@ def selection_menu():
         return subreddit_selection
     
     sub_name = subreddit_selection
-    print()
-    print("Selecione uma história para processar:")
+    print(term.clear())
+    print(term.bold("Selecione uma história para processar:"))
     print("1. Escolher entre os 10 posts mais populares")
     print("2. Escolher entre 10 posts aleatórios entre os 500 mais populares")
     print("3. Escolher entre 10 posts aleatórios entre os 100 mais populares da última semana")
@@ -163,20 +171,20 @@ def selection_menu():
 
     while True:
         try:
-            choice = int(input("Digite o número da opção desejada: "))
+            choice = int(input(term.bold("Digite o número da opção desejada: ")))
 
             if choice == 1:
                 # Obtém os 10 posts mais populares do subreddit
                 stories = get_popular_stories(sub_name=sub_name, limit=10)
                 valid_stories = filter_valid_stories(stories)
                 if not valid_stories:
-                    print("Nenhuma história válida encontrada.")
+                    print(term.bold_red("Nenhuma história válida encontrada."))
                     return None
-                print("Escolha um dos seguintes posts:")
+                print(term.bold("Escolha um dos seguintes posts:"))
                 for i, story in enumerate(valid_stories):
                     print(f"{i + 1}. {story['title']}")
                     print(f"   Link: {story['url']}")
-                story_choice = int(input("Digite o número da história desejada: ")) - 1
+                story_choice = int(input(term.bold("Digite o número da história desejada: "))) - 1
                 return ["story", valid_stories[story_choice]]
 
             elif choice == 2:
@@ -184,13 +192,13 @@ def selection_menu():
                 stories = get_random_stories(sub_name=sub_name, num_posts=10)
                 valid_stories = filter_valid_stories(stories)
                 if not valid_stories:
-                    print("Nenhuma história válida encontrada.")
+                    print(term.bold_red("Nenhuma história válida encontrada."))
                     return None
-                print("Escolha um dos seguintes posts:")
+                print(term.bold("Escolha um dos seguintes posts:"))
                 for i, story in enumerate(valid_stories):
                     print(f"{i + 1}. {story['title']}")
                     print(f"   Link: {story['url']}")
-                story_choice = int(input("Digite o número da história desejada: ")) - 1
+                story_choice = int(input(term.bold("Digite o número da história desejada: "))) - 1
                 return ["story", valid_stories[story_choice]]
 
             elif choice == 3:
@@ -198,23 +206,23 @@ def selection_menu():
                 stories = get_random_recent_stories(sub_name=sub_name, num_posts=10)
                 valid_stories = filter_valid_stories(stories)
                 if not valid_stories:
-                    print("Nenhuma história válida encontrada.")
+                    print(term.bold_red("Nenhuma história válida encontrada."))
                     return None
-                print("Escolha um dos seguintes posts:")
+                print(term.bold("Escolha um dos seguintes posts:"))
                 for i, story in enumerate(valid_stories):
                     print(f"{i + 1}. {story['title']}")
                     print(f"   Link: {story['url']}")
-                story_choice = int(input("Digite o número da história desejada: ")) - 1
+                story_choice = int(input(term.bold("Digite o número da história desejada: "))) - 1
                 return ["story", valid_stories[story_choice]]
 
             elif choice == 4:
                 # Insere URL de um post específico
-                url = input("Insira a URL do post específico: ")
+                url = input(term.bold("Insira a URL do post específico: "))
                 story = get_story_from_url(url)
                 if story and is_valid_story(story):
                     return ['story', story]
                 else:
-                    print("URL inválida ou post não encontrado.")
+                    print(term.bold_red("URL inválida ou post não encontrado."))
                     return None
             
             elif choice == 99:
@@ -222,9 +230,9 @@ def selection_menu():
                 break
 
             else:
-                print("Opção inválida.")
+                print(term.bold_red("Opção inválida."))
         except ValueError:
-            print("Escolha uma opção numérica")
+            print(term.bold_red("Escolha uma opção numérica"))
 
 def cls():
-    os.system('cls' if os.name=='nt' else 'clear')
+    print(term.clear())
