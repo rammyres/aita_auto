@@ -1,6 +1,7 @@
 import json, boto3, random, os
 import moviepy.editor as mp
 from playsound import playsound
+from lib.reddit_utils import convert_to_ssml
 
 # Função para criar um segmento de áudio com silêncio
 def get_random_voice(gender):
@@ -28,14 +29,16 @@ def text_to_speech(text, filename, voice, language_code, output_format='mp3', en
     # Gerar áudios para cada parte do texto
     audio_streams = []
     for i, chunk in enumerate(chunks):
+        _chunk = convert_to_ssml(chunk)
         response = polly.synthesize_speech(
-            Text=chunk,
+            Text=_chunk,
             OutputFormat=output_format,
             SampleRate='24000',
             LanguageCode=language_code,
             VoiceId=voice,
             Engine=engine,
-            TextType='text'
+            # TextType='text'
+            TextType='ssml'
         )
         
         # Salvar o áudio sintetizado temporariamente

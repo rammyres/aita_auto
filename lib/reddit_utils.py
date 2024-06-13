@@ -109,52 +109,69 @@ def get_story_from_url(url):
     
     return story
 
-def get_random_stories(sub_name = 'amitheasshole', num_posts=10):
+
+# Função para buscar histórias populares de acordo com os parametros
+def get_stories(sub_name='amitheasshole', sample_size=None, return_limit=10, time_limit=None):
+    """
+    Retorna stories de acordo com os parametros
+
+    sub_name indica o subreddit de onde retirar a amostragem (padrão amitheasshole)
+
+    sample_size indica quantos posts devem ser puxados pela API para sorteio
+
+    return_limit indica quatas historias devem ser retornadas do sample
     
-    # Buscar as 500 postagens mais populares do subreddit AITA
+    time_limit indica o periodo de tempo de busca as postagens mais comentadas
+    
+    get_stories() retorna as 10 postagens mais populares do amitheasshole
+    
+    get_stories(sub_name='trueoffmychest') retorna as 10 postagens mais populares de TrueOffMyChest
+
+    get_stories(sub_name='trueoffmychest', sample_size = 500, time_limit = 'week') retorna 10 entre 
+    as 500 histórias mais populares do subreddit trueoffmychest da ultima semana
+    """
     subreddit = reddit.subreddit(sub_name)
-    top_posts = subreddit.top(limit=500)  # Limitar à 500 postagens mais populares
+    posts = []
+    if time_limit and sample_size:
+        _posts = subreddit.top(limit=sample_size, time_filter=time_limit)
+        posts = random.sample(list(_posts), return_limit)
     
-    # Selecionar aleatoriamente 'num_posts' postagens
-    selected_posts = random.sample(list(top_posts), num_posts)
+    if time_limit and not sample_size: 
+        _posts = subreddit.top(limit=10, time_filter=time_limit)
+        posts = random.sample(list(_posts), return_limit)
     
-    # Extrair informações de título e URL para cada post selecionado
+    if not time_limit and sample_size:
+        _posts = subreddit.top(limit=sample_size)
+        posts = random.sample(list(_posts), return_limit)
+    
+    if not time_limit and not sample_size: 
+        posts = subreddit.top(limit=10)
+    
     stories = []
-    for post in selected_posts:
-        story = {
-            'title': post.title,
-            'url': post.url,
-            'text': post.selftext
-        }
-        stories.append(story)
+    
+    for post in posts:
+        stories.append({'title': post.title, 'text': post.selftext, 'url': post.url})
     
     return stories
 
-def get_random_recent_stories(sub_name = 'amitheasshole', num_posts=10):
+def get_story_from_url(url):
+    submission = reddit.submission(url=url)
     
-    # Buscar as 500 postagens mais populares do subreddit AITA
-    subreddit = reddit.subreddit(sub_name)
-    top_posts = subreddit.top(limit=100, time_filter = 'week')  # Limitar à 500 postagens mais populares
+    # Extrair informações relevantes do post
+    story = {
+        'title': submission.title,
+        'text': submission.selftext,
+        'url': submission.url
+    }
     
-    # Selecionar aleatoriamente 'num_posts' postagens
-    selected_posts = random.sample(list(top_posts), num_posts)
-    
-    # Extrair informações de título e URL para cada post selecionado
-    stories = []
-    for post in selected_posts:
-        story = {
-            'title': post.title,
-            'url': post.url,
-            'text': post.selftext
-        }
-        stories.append(story)
-    
-    return stories
+    return story
 
+# Usa IA para separar as sentenças
 def split_sentences(text):
     seg = pysbd.Segmenter(language='en', clean=False)
     return seg.segment(text)
 
+# Usa IA para fazer a verificação de texto 
 def spellCheck(text):
 
     # phrases = nltk.sent_tokenize(text)
@@ -170,6 +187,32 @@ def spellCheck(text):
             print(f'{i+1} - Corrected - {phrases[i]}')
     
     return ' '.join(phrases)
+
+def convert_to_ssml(text):
+    """
+    Converte um texto longo para SSML.
+
+    Args:
+    text (str): O texto a ser convertido.
+
+    Returns:
+    str: O texto formatado em SSML.
+    """
+    # Adiciona a tag SSML de abertura
+    ssml_text = "<prosody>"
+
+    # Divide o texto em sentenças para adicionar pausas
+    sentences = text.split('.')
+    for sentence in sentences:
+        sentence = sentence.strip()
+        if sentence:
+            # Adiciona a sentença e uma pausa após ela
+            ssml_text += f"{sentence}. <break time='100ms'/> "
+
+    # Adiciona a tag SSML de fechamento
+    ssml_text += "</prosody>"
+
+    return ssml_text
 
 def prepare_text(text):
     print("Removendo tags")
@@ -235,5 +278,7 @@ def prepare_text(text):
     # print("Correção de texto por IA")
     # text = spellCheck(text)
     # input()
-
+    
     return text
+
+

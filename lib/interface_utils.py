@@ -1,7 +1,7 @@
 from blessed import Terminal
 from lib.reddit_utils import *
 from lib.data_utils import list_videos, delete_video
-import json
+import json, sys
 
 term = Terminal()
 
@@ -16,6 +16,8 @@ def print_msg(msg):
     print(term.center("==================##################=================="))
     print(term.center(msg))
     print(term.center("==================##################=================="))
+    sys.stdout.flush()
+
 
 def suggest_gender(text):
     pattern = re.compile(r'(\d+[mfMF]|[mfMF]\d+)')
@@ -165,8 +167,9 @@ def selection_menu():
     print(term.bold("Selecione uma história para processar:"))
     print("1. Escolher entre os 10 posts mais populares")
     print("2. Escolher entre 10 posts aleatórios entre os 500 mais populares")
-    print("3. Escolher entre 10 posts aleatórios entre os 100 mais populares da última semana")
-    print("4. Inserir URL de um post específico")
+    print("3. Escolher entre os 10 posts mais populares da ultima semana")
+    print("4. Escolher entre 10 posts aleatórios entre os 100 mais populares da última semana")
+    print("5. Inserir URL de um post específico")
     print("99. Voltar para o menu inicial")
 
     while True:
@@ -175,7 +178,8 @@ def selection_menu():
 
             if choice == 1:
                 # Obtém os 10 posts mais populares do subreddit
-                stories = get_popular_stories(sub_name=sub_name, limit=10)
+                # stories = get_popular_stories(sub_name=sub_name, limit=10)
+                stories = get_stories(sub_name=sub_name)
                 valid_stories = filter_valid_stories(stories)
                 if not valid_stories:
                     print(term.bold_red("Nenhuma história válida encontrada."))
@@ -189,7 +193,8 @@ def selection_menu():
 
             elif choice == 2:
                 # Obtém 10 posts aleatórios entre os 500 mais populares do subreddit
-                stories = get_random_stories(sub_name=sub_name, num_posts=10)
+                # stories = get_random_stories(sub_name=sub_name, num_posts=10)
+                stories = get_stories(sub_name=sub_name, sample_size=500, return_limit=10)
                 valid_stories = filter_valid_stories(stories)
                 if not valid_stories:
                     print(term.bold_red("Nenhuma história válida encontrada."))
@@ -201,9 +206,10 @@ def selection_menu():
                 story_choice = int(input(term.bold("Digite o número da história desejada: "))) - 1
                 return ["story", valid_stories[story_choice]]
 
-            elif choice == 3:
-                # Obtém 10 posts aleatórios entre os 100 mais populares da última semana do subreddit
-                stories = get_random_recent_stories(sub_name=sub_name, num_posts=10)
+            if choice == 3:
+                # Obtém os 10 posts mais populares do subreddit na ultima semana
+                # stories = get_popular_stories_week(sub_name=sub_name, limit=10)
+                stories = get_stories(sub_name=sub_name, time_limit='week')
                 valid_stories = filter_valid_stories(stories)
                 if not valid_stories:
                     print(term.bold_red("Nenhuma história válida encontrada."))
@@ -216,6 +222,21 @@ def selection_menu():
                 return ["story", valid_stories[story_choice]]
 
             elif choice == 4:
+                # Obtém 10 posts aleatórios entre os 100 mais populares da última semana do subreddit
+                # stories = get_random_recent_stories(sub_name=sub_name, num_posts=10)
+                stories = get_stories(sub_name=sub_name, sample_size=100, time_limit='week')
+                valid_stories = filter_valid_stories(stories)
+                if not valid_stories:
+                    print(term.bold_red("Nenhuma história válida encontrada."))
+                    return None
+                print(term.bold("Escolha um dos seguintes posts:"))
+                for i, story in enumerate(valid_stories):
+                    print(f"{i + 1}. {story['title']}")
+                    print(f"   Link: {story['url']}")
+                story_choice = int(input(term.bold("Digite o número da história desejada: "))) - 1
+                return ["story", valid_stories[story_choice]]
+
+            elif choice == 5:
                 # Insere URL de um post específico
                 url = input(term.bold("Insira a URL do post específico: "))
                 story = get_story_from_url(url)

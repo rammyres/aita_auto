@@ -9,8 +9,9 @@ from lib.file_utils import *
 from lib.audio_utils import *
 from lib.interface_utils import selection_menu, cls
 from lib.data_utils import save_to_json
+from blessed import Terminal
 import moviepy.editor as mp
-import uuid, gc, os
+import uuid, gc, os, sys
 
 # Função principal
 def main():
@@ -20,6 +21,7 @@ def main():
     os.environ["TOKENIZERS_PARALLELISM"] = "false" # Disabilita paralelismo para uso do BeRT
                                                    # na verificação ortográfica 
     cls()
+    term = Terminal()
     while True:
         selected_story = None
         choice = selection_menu()
@@ -91,29 +93,34 @@ def main():
 
         # Criar videos prontos 
         for i in range(len(paragraphs)):
-            # Cria o clipe de narração para inclusão do video a partir do audio gerado pela Polly
             narration_audio = mp.AudioFileClip(f"{audio_path}/__part_{i}__.mp3") 
             print_msg(f'Video em 1 parte (tempo de {narration_audio.duration:.2f}s), processando...' if len(paragraphs) == 1 else f'Parte em {i + 1} processamento, tempo total {narration_audio.duration:.2f}s')
+            
+            # Certifique-se de que a mensagem é exibida corretamente
+            sys.stdout.flush()
+            
             video_with_audio = gameplay_video.set_audio(narration_audio) # Inclui o áudio no video de fundo
             print_msg("Formatando para o formato do tiktok") 
+            sys.stdout.flush()
             formatted_video = format_video_to_9x16(video_with_audio) # Recorta o vídeo para o formato 9x16
             
-            # Gera as legendas a partir do áudio de cada uma as partes
             print_msg("Adicionando legendas ao video")
+            sys.stdout.flush()
             generate_subtitles(f'{audio_path}/__part_{i}__.mp3', f'{subtitle_path}/__part_{i}.srt')
 
             # Cria a camada de legendas e caption da parte
             video_with_subtitles = add_subtitles_to_video(formatted_video, 
-                                                          f'{subtitle_path}/__part_{i}.srt', 
-                                                          i + 1, 
-                                                          len(paragraphs))
-            
+                                                        f'{subtitle_path}/__part_{i}.srt', 
+                                                        i + 1, 
+                                                        len(paragraphs))
+
             generated_videos = []
-            # Exporta o video pronto
             output_filename = f'{output_path}/output_part_{i + 1}.mp4'
+            print_msg(f"Exportando parte {i+1} com {narration_audio.duration:.2f}s")
             export_single(video_with_subtitles, 
-                          narration_audio.duration, 
-                          output_filename)
+                        narration_audio.duration, 
+                        output_filename)
+
         
         remove_tmp() # Remove arquivos temporários
         
@@ -134,7 +141,9 @@ def main():
         
         notify() # Toca uma notificação ao fim do processamento da tarefa de geração atual
 
+        sys.stdout.flush()
         input(term.bold("Pressione ENTER para continuar"))
+        
         gc.collect()
 
 if __name__ == '__main__':
