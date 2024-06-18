@@ -106,7 +106,7 @@ def set_subreddit():
                         print(f"{idx+1}. {video['title']}")
                     print("99 - Voltar")
                     delete_index = int(input(term.bold("Escolha o índice do vídeo para deletar: ")))-1
-                    if delete_index == 99:
+                    if delete_index == 98:
                         continue
                     else:
                         delete_video(delete_index)
@@ -193,7 +193,7 @@ def selection_menu():
                 # Obtém os 10 posts mais populares do subreddit
                 # stories = get_popular_stories(sub_name=sub_name, limit=10)
                 stories = get_stories(sub_name=sub_name)
-                post_id = posts_menu(stories=stories)
+                valid_stories, post_id = posts_menu(stories=stories)
                 if post_id+1 == 99:
                     break
                 return ["story", valid_stories[post_id]]
