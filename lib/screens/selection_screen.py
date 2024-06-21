@@ -9,12 +9,30 @@ class SelectionScreen(ft.View):
 
         return subreddits_json['subreddits']
 
-    def __init__(self, go_home):
+    def create_button(self, subreddit_name, subreddit_description, go_select_post):
+        return ft.Card(content=ft.Column(controls=
+            [
+                ft.ElevatedButton(
+                    text="{}".format(subreddit_name),
+                    on_click=lambda e: go_select_post(subreddit_name)
+                ),
+                ft.Text(subreddit_description)
+            ],
+            width=300,
+            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+            )
+            
+        )
+
+    def __init__(self, go_home, go_select_post):
         row = ft.ResponsiveRow(col=6)
-        column = ft.Column()
-        for i, k in enumerate(self.get_subreddits()):
-            texto = "{} - {}".format(i+1, k['name'])
-            column.controls.append(ft.ElevatedButton(text=texto))
+        column = ft.Column(
+            spacing=10,
+            scroll=ft.ScrollMode.ALWAYS,
+        )
+        subreddits = self.get_subreddits()
+        for sr in subreddits:
+            column.controls.append(self.create_button(sr['name'], sr['description'], go_select_post))
         row.controls.append(column)
 
         super().__init__(
@@ -25,3 +43,5 @@ class SelectionScreen(ft.View):
                 ft.ElevatedButton(text="Volar para home", on_click=go_home),
             ]
             )
+        self.scroll = ft.ScrollMode.ALWAYS
+        # self.page.update()
