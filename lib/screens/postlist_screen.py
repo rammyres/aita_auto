@@ -14,16 +14,23 @@ class PostListScreen(ft.View):
         self.top_random_posts_button = self.create_button("10 posts aleatórios entre os 500 mais populares", self.load_random_top_posts)
         self.recent_posts_button = self.create_button("10 postagens mais populares da última semana", self.load_recent_posts)
         self.random_recent_posts_button = self.create_button("10 postagens entre as 100 mais populares da última semana", self.load_random_recent_posts)
-        self.home_button = self.create_button(text="Home", on_click=go_home)
+        # self.home_button = self.create_button(text="Home", on_click=go_home)
+        self.home_button = ft.IconButton(
+            icon=ft.icons.HOME,
+            icon_color=ft.colors.BLUE,
+            icon_size=40,
+            tooltip="Voltar para home",
+            on_click=go_home
+        )
 
         self.button_row = ft.Container(
             content=ft.GridView(
                 controls=[
+                    self.home_button,
                     self.top_posts_button,
                     self.top_random_posts_button,
                     self.recent_posts_button,
                     self.random_recent_posts_button,
-                    self.home_button,
                 ],
                 padding=10,
                 max_extent=160
@@ -32,7 +39,17 @@ class PostListScreen(ft.View):
         )
 
         self.controls = [
-            ft.Text(sub_name, font_family="Roboto", size=50, weight=ft.FontWeight.BOLD),
+            ft.AppBar(
+                title=ft.Text(
+                    sub_name, 
+                    font_family="Roboto", 
+                    size=40, 
+                    weight=ft.FontWeight.BOLD, 
+                    color=ft.colors.WHITE
+                    ), 
+                center_title=True, 
+                bgcolor=ft.colors.BLUE
+                ),
             self.button_row,
             self.posts_list,
         ]
