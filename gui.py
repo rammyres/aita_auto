@@ -3,6 +3,7 @@ from lib.screens.main_screen import MainScreen
 from lib.screens.selection_screen import SelectionScreen
 from lib.screens.postlist_screen import PostListScreen
 from lib.screens.post_screen  import PostScreen
+from lib.screens.generate_screen import GenerateScreen
 
 def main(page: ft.Page):
     page.title = "Aita Auto VideoMaker"
@@ -20,13 +21,26 @@ def main(page: ft.Page):
 
     def show_select_post(sub_name):
         page.views.clear()
-        page.views.append(PostListScreen(sub_name=sub_name, go_post_screen=show_post_screen, go_home=go_home))
+        page.views.append(PostListScreen(
+            sub_name=sub_name, 
+            go_post_screen=show_post_screen, 
+            go_home=go_home))
         page.update()
 
     def show_post_screen(post_title, post_text):
         page.views.clear()
-        page.views.append(PostScreen(post_title=post_title, post_text=post_text, go_home=go_home))
+        page.views.append(PostScreen(
+            post_title=post_title, 
+            post_text=post_text, 
+            go_generate = show_generate_screen, 
+            go_home=go_home))
         page.update()
+
+    def show_generate_screen(text, gender):
+        page.views.clear()
+        page.views.append(GenerateScreen(page, text=text, gender=gender, go_home=go_home))
+        page.update()
+
 
 
     # Start the app with the home view
