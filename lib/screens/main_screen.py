@@ -11,7 +11,11 @@ class MainScreen(ft.View):
             controls=[
                 ft.AppBar(title=ft.Text("Aita Auto VideoMaker")),
                 ft.Column(controls=[
-                    ft.ElevatedButton(text="Escolher subreddit", on_click=show_selection),
+                    ft.ElevatedButton(text="Escolher subreddit", 
+                                      bgcolor=ft.colors.BLUE,
+                                      color=ft.colors.WHITE,
+                                      style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
+                                      on_click=show_selection),
                     # ft.ElevatedButton(text="Mostrar lista de videos disponíveis", on_click=show_videos),
                 ])
             ]
