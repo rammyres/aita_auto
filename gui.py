@@ -5,6 +5,7 @@ from lib.screens.postlist_screen import PostListScreen
 from lib.screens.post_screen  import PostScreen
 from lib.screens.generate_screen import GenerateScreen
 from lib.screens.video_screen import VideoView
+from lib.screens.video_list_screen import VideoListView
 
 def main(page: ft.Page):
     page.title = "Aita Auto VideoMaker"
@@ -12,7 +13,7 @@ def main(page: ft.Page):
     
     def go_home(e=None):
         page.views.clear()
-        page.views.append(MainScreen(show_selection=show_selection))
+        page.views.append(MainScreen(show_selection=show_selection, show_video_list=show_video_list))
         page.update()
 
     def show_selection(e=None):
@@ -53,6 +54,12 @@ def main(page: ft.Page):
         page.views.clear()
         page.views.append(VideoView(page, video_path=video_path, go_home=go_home))
         page.update()
+
+    def show_video_list(e):
+        page.views.clear()
+        page.views.append(VideoListView(page, go_home=go_home, go_video_screen=show_video_screen))
+        page.update()
+
 
     # Start the app with the home view
     go_home()
