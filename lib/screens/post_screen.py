@@ -8,16 +8,11 @@ class PostScreen(ft.View):
         self.gender = None
         self.go_home = go_home
         self.go_generate = go_generate
-        self.post_title = post_title
-        self.post_text = post_text
-        self.text_list = []
-        self.text = ""
+        self.post_title = prepare_text(post_title)
+        self.post_text = prepare_text(post_text)
         
         def finished_text_action(e=None):
-            self.text_list.extend([self.title_input.value, self.text_input.value])
-            self.text = ' '.join(self.text_list)
-            self.text = prepare_text(self.text)
-            self.go_generate(self.text, self.gender)
+            self.go_generate(self.post_title, self.post_text,self.gender)
             
         self.title_input = ft.TextField(
             value=self.post_title, 

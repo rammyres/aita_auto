@@ -199,7 +199,7 @@ def convert_to_ssml(text):
     str: O texto formatado em SSML.
     """
     # Adiciona a tag SSML de abertura
-    ssml_text = "<prosody>"
+    ssml_text = "<speak>"
 
     # Divide o texto em sentenças para adicionar pausas
     sentences = text.split('.')
@@ -210,7 +210,7 @@ def convert_to_ssml(text):
             ssml_text += f"{sentence}. <break time='100ms'/> "
 
     # Adiciona a tag SSML de fechamento
-    ssml_text += "</prosody>"
+    ssml_text += "</speak>"
 
     return ssml_text
 

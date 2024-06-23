@@ -4,6 +4,7 @@ from lib.screens.selection_screen import SelectionScreen
 from lib.screens.postlist_screen import PostListScreen
 from lib.screens.post_screen  import PostScreen
 from lib.screens.generate_screen import GenerateScreen
+from lib.screens.video_screen import VideoView
 
 def main(page: ft.Page):
     page.title = "Aita Auto VideoMaker"
@@ -36,12 +37,22 @@ def main(page: ft.Page):
             go_home=go_home))
         page.update()
 
-    def show_generate_screen(text, gender):
+    def show_generate_screen(title, text, gender):
         page.views.clear()
-        page.views.append(GenerateScreen(page, text=text, gender=gender, go_home=go_home))
+        page.views.append(GenerateScreen(page, 
+                                         title=title, 
+                                         text=text, 
+                                         gender=gender, 
+                                         go_video_screen=show_video_screen, 
+                                         go_home=go_home
+                                         )
+                         )
         page.update()
 
-
+    def show_video_screen(video_path):
+        page.views.clear()
+        page.views.append(VideoView(page, video_path=video_path, go_home=go_home))
+        page.update()
 
     # Start the app with the home view
     go_home()
