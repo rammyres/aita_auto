@@ -1,14 +1,14 @@
 # AITA Video Maker
 
-Este é um script Python para criar vídeos automáticos com histórias do subreddit "Am I the Asshole?" (AITA) do Reddit.
-
-  - A correção de texto é feita através do modelo BeRT. 
+Este é um script Python para criar vídeos automáticos com histórias de vários subreddits (incluindo "Am I the Asshole?" (AITA)) do Reddit.
 
   - A geração de audio usa a AWS Polly.
 
   - As legendas são geradas através da Assembly.ai
 
-Credenciais de acesso a esse serviços sáo necessárias (todos os serviços tem tiers gratuítos generosos)
+  - Não há correção de texto por padrão, mas alguns erros na geração do texto provocadas pela PRAW são minimizadas através de NLTK
+
+Credenciais de acesso (API keys) a AWS, Assembly.ai e Reddit sáo necessárias (todos os serviços tem tiers gratuítos generosos)
 
 ## Funcionalidades
 
@@ -33,7 +33,8 @@ Credenciais de acesso a esse serviços sáo necessárias (todos os serviços tem
   - pydub
   - playsound
   - nltk
-  - mysmallutils==2.0.20
+  - mysmallutils
+  - blessed
 
 ## Instalação
 

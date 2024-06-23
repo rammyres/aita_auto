@@ -1,12 +1,14 @@
 import moviepy.editor as mp
 from moviepy.video.fx.all import crop
 from moviepy.video.tools.subtitles import SubtitlesClip
+from moviepy.config import change_settings
 import os
 
 # Função para adicionar texto ao vídeo
 def add_subtitles_to_video(video, subtitles, part, total_parts):
     # Função geradora para criar clipes de texto
-    generator = lambda txt: mp.TextClip(txt,font='Metropolis-black', 
+    # generator = lambda txt: mp.TextClip(txt,font='Metropolis-black', 
+    generator = lambda txt: mp.TextClip(txt,font='Poppins-ExtraBold', 
                                         fontsize=90, 
                                         color='yellow',
                                         stroke_color='black', 
@@ -47,6 +49,7 @@ def split_video(video, total_duration, segment_duration):
     return segments
 
 def export_single(video, total_time, output_file):
+    change_settings({"FFMPEG_BINARY":"ffmpeg"})
     start_time = 0 
     output = video.subclip(start_time, total_time)
     output = output.resize(height=1920).resize(width=1080)
