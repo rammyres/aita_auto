@@ -6,6 +6,7 @@ from lib.screens.post_screen  import PostScreen
 from lib.screens.generate_screen import GenerateScreen
 from lib.screens.video_screen import VideoView
 from lib.screens.video_list_screen import VideoListView
+from lib.screens.url_post_screen import UrlScreen
 
 def main(page: ft.Page):
     page.title = "Aita Auto VideoMaker"
@@ -13,16 +14,19 @@ def main(page: ft.Page):
     
     def go_home(e=None):
         page.views.clear()
-        page.views.append(MainScreen(show_selection=show_selection, show_video_list=show_video_list))
+        page.views.append(MainScreen(
+            show_selection=show_selection, 
+            show_video_list=show_video_list,
+            show_url_screen=show_url_screen
+            )
+            )
         page.update()
 
     def show_selection(e=None):
-        page.views.clear()
-        page.views.append(SelectionScreen(go_home=go_home, go_select_post=show_select_post))
+        page.views.append(SelectionScreen(page, go_home=go_home, go_select_post=show_select_post))
         page.update()
 
     def show_select_post(sub_name):
-        page.views.clear()
         page.views.append(PostListScreen(
             sub_name=sub_name, 
             go_post_screen=show_post_screen, 
@@ -60,8 +64,20 @@ def main(page: ft.Page):
         page.views.append(VideoListView(page, go_home=go_home, go_video_screen=show_video_screen))
         page.update()
 
+    def show_url_screen(e):
+        page.views.clear()
+        page.views.append(UrlScreen(page, go_post_screen=show_post_screen))
+        page.update()
+
 
     # Start the app with the home view
     go_home()
+
+    def on_back(e):
+        if len(page.views) > 1:
+            page.views.pop()
+            page.update()
+        else:
+            page.window.close()
 
 ft.app(target=main)

@@ -14,19 +14,10 @@ class PostListScreen(ft.View):
         self.top_random_posts_button = self.create_button("10 posts aleatórios entre os 500 mais populares", self.load_random_top_posts)
         self.recent_posts_button = self.create_button("10 postagens mais populares da última semana", self.load_recent_posts)
         self.random_recent_posts_button = self.create_button("10 postagens entre as 100 mais populares da última semana", self.load_random_recent_posts)
-        # self.home_button = self.create_button(text="Home", on_click=go_home)
-        self.home_button = ft.IconButton(
-            icon=ft.icons.HOME,
-            icon_color=ft.colors.BLUE,
-            icon_size=40,
-            tooltip="Voltar para home",
-            on_click=go_home
-        )
 
         self.button_row = ft.Container(
             content=ft.GridView(
                 controls=[
-                    self.home_button,
                     self.top_posts_button,
                     self.top_random_posts_button,
                     self.recent_posts_button,
@@ -43,10 +34,15 @@ class PostListScreen(ft.View):
                 title=ft.Text(
                     sub_name, 
                     font_family="Roboto", 
-                    size=40, 
                     weight=ft.FontWeight.BOLD, 
                     color=ft.colors.WHITE
                     ), 
+                actions=[ft.IconButton(
+                        icon=ft.icons.HOME_FILLED, 
+                        icon_size=30,
+                        icon_color=ft.colors.WHITE,
+                        on_click=go_home,
+                    )],
                 center_title=True, 
                 bgcolor=ft.colors.BLUE
                 ),
@@ -119,6 +115,17 @@ class PostListScreen(ft.View):
         self.update_posts('top_recent_stories')
 
     def update_posts(self, mode):
+        self.posts_list.controls.clear()
+        self.posts_list.controls.append(
+            ft.Row(
+                controls=[
+                    ft.ProgressRing(),
+                    ft.Text("Recuperando postagens", color=ft.colors.GREY)
+                ]
+
+            )
+        )
+        self.posts_list.update()
         rows = self.get_posts_buttons(self.sub_name, mode)
         self.posts_list.controls.clear()
         self.posts_list.controls.extend(rows)

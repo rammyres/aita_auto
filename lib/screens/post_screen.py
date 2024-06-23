@@ -29,14 +29,6 @@ class PostScreen(ft.View):
             content=self.text_input,
             expand=True
         )
-
-        self.home_button = ft.ElevatedButton(
-            text="Home",
-            bgcolor=ft.colors.BLUE,
-            color=ft.colors.WHITE,
-            style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
-            on_click=self.go_home
-        )
         
         self.process_button = ft.ElevatedButton(
             text="Processar video",
@@ -57,20 +49,26 @@ class PostScreen(ft.View):
         )
 
         self.button_row = ft.Row(
-            controls=[self.gender_selection_row, self.process_button, self.home_button],
+            controls=[ft.Text("Selecione o generodo narrador"), self.gender_selection_row, self.process_button],
             alignment=ft.MainAxisAlignment.END
         )
 
         self.controls = [
             ft.AppBar(
-                title=ft.Text("Edite o texto se necessário e processe a gravação do video"),
+                title=ft.Text("Edite o texto se necessário e processe a geração do video", color=ft.colors.WHITE),
                 center_title=True,
-                bgcolor=ft.colors.BLUE
-            ),
+                bgcolor=ft.colors.BLUE,
+                actions=[ft.IconButton(
+                        icon=ft.icons.HOME_FILLED,
+                        icon_color=ft.colors.WHITE,
+                        icon_size = 30,
+                        on_click=go_home)
+                        ]
+                ),
             self.title_input,
             self.scrollable_text,
-            self.button_row
-        ]
+            self.button_row,
+            ]
 
     def did_mount(self):
         self.update_gender_text()
@@ -78,7 +76,7 @@ class PostScreen(ft.View):
     def update_gender_text(self):
         self.suggested_gender = suggest_gender(" ".join([self.post_title, self.post_text]))
         if self.suggested_gender:
-            self.suggested_text.value = f"Sugestão de gênero: {self.suggested_gender}"
+            self.suggested_text.value = f"(Sugestão de gênero: {self.suggested_gender})"
             self.suggested_text.visible = True
         else:
             self.suggested_text.visible = False
