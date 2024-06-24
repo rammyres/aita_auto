@@ -103,7 +103,7 @@ As vozes em config/voices.json são uma questão pessoal, mas todas as vozes dis
 ## GUI 
 
 A interface gráfica pode ser acessada usando o seguinte script:
-    ```sh
+    ```bash
     python gui.py
     ```
 
