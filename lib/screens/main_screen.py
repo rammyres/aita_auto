@@ -1,8 +1,8 @@
 import flet as ft
 
 class MainScreen(ft.View):
-    # def __init__(self, show_selection, show_videos):
     def __init__(self, show_selection, show_video_list, show_url_screen, show_config_screen):
+        print("Initializing MainScreen")
         super().__init__(
             route='/',
             vertical_alignment=ft.MainAxisAlignment.CENTER,
