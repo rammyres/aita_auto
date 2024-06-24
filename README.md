@@ -10,6 +10,10 @@ Este é um script Python para criar vídeos automáticos com histórias de vári
 
 Credenciais de acesso (API keys) a AWS, Assembly.ai e Reddit sáo necessárias (todos os serviços tem tiers gratuítos generosos)
 
+## Novidades
+
+Agora o Aita VideoMaker conta com uma interface gráfica feita em flet
+
 ## Funcionalidades
 
 - Baixa vídeos do YouTube para serem usados como background.
@@ -22,6 +26,7 @@ Credenciais de acesso (API keys) a AWS, Assembly.ai e Reddit sáo necessárias (
 
 - Python 3.x
 - Bibliotecas Python:
+  - flet
   - moviepy
   - praw (Python Reddit API Wrapper)
   - boto3
