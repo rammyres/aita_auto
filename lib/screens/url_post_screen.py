@@ -4,6 +4,7 @@ import re
 
 class UrlScreen(ft.View):
     def __init__(self, page, go_post_screen):
+        print("Initializing UrlScreen")
         super().__init__(route='/url_screen')
         self.page = page
         self.go_post_screen = go_post_screen
