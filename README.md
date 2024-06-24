@@ -115,10 +115,16 @@ Todas as funções da versão em modo texto estão disponíveis, incluindo funci
 
   ## Screenshots
   ![Tela principal](screenshots/main_screen.png)
+
   ![Seleção de subrredits](screenshots/sub_list.png)
+
   ![Seleção de postagens](screenshots/post_list.png)
+
   ![Edição de postagem](screenshots/post_screen.png)
+
   ![Geração de video](screenshots/generate_screen.png)
+
   ![Lista de videos](screenshots/video_list.png)
+  
   ![Prévia de videos](screenshots/video_player.png)
 

@@ -64,7 +64,8 @@ class VideoView(ft.View):
         
 
     def copy_to_clipboard(self, e):
-        self.page.set_clipboard(f"{os.getcwd()}/{self.video_path}")
+        _video_path = os.path.join(os.getcwd(), self.video_path)
+        self.page.set_clipboard(_video_path)
         self.page.snack_bar = ft.SnackBar(
             content=ft.Text("Caminho copiado"),
             duration=5000, 

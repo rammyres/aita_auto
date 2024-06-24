@@ -38,33 +38,27 @@ class GenerateScreen(ft.View):
             self.processing_bgvideo
         ])
         
-        self.go_home_button = ft.ElevatedButton(
-            text="Voltar para home", 
-            bgcolor=ft.colors.BLUE,
-            color=ft.colors.WHITE,
-            style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
+        self.go_home_button = ft.IconButton(
+            icon=ft.icons.HOME_FILLED, 
+            icon_color=ft.colors.WHITE,
             on_click=go_home
         )
 
-        self.controls = [
-            ft.AppBar(
+        self.appbar = ft.AppBar(
                 title=ft.Text(
                     "Gerando seu video", 
                     font_family="roboto",
                     weight=ft.FontWeight.BOLD, 
                     color=ft.colors.WHITE
-                ), 
+                ),
                 center_title=True, 
                 bgcolor=ft.colors.BLUE
-            ),
-            ft.Container(height=500, content=self.processing_column),
-            self.gv_column,
-            ft.Column(
-                controls=[
-                    self.go_home_button
-                ],
-                alignment=ft.MainAxisAlignment.END
             )
+
+        self.controls = [
+            self.appbar,
+            ft.Container(height=500, content=self.processing_column),
+            self.gv_column
         ]
 
     def sb_notify(self, text):
@@ -173,4 +167,6 @@ class GenerateScreen(ft.View):
         self.process_subtitles()
         self.download_bgvideo()
         self.processing_videos()
+        self.appbar.actions.append(self.go_home_button)
+        self.appbar.update()
         remove_tmp()

@@ -19,24 +19,24 @@ class VideoListView(ft.View):
                     color=ft.colors.WHITE
                 ),
                 center_title=True,
-                bgcolor=ft.colors.BLUE
+                bgcolor=ft.colors.BLUE,
+                actions=[
+                    ft.IconButton(icon=ft.icons.HOME_FILLED,
+                                  icon_color=ft.colors.WHITE, 
+                                  icon_size=30, 
+                                  on_click=go_home)
+                ]
             ),
             ft.Container(height=500, content=self.build_video_list()),
-            ft.ElevatedButton(
-                text="Voltar para home",
-                bgcolor=ft.colors.BLUE,
-                color=ft.colors.WHITE,
-                style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
-                on_click=lambda e: self.go_home()
-            )
         ]
 
     def build_video_list(self):
+        video_db = os.path.join('output', 'videos_db.json')
         video_list = ft.Column()
-        if not os.path.exists('output/videos_db.json'):
+        if not os.path.exists(video_db):
             return ft.Text("Nenhum vídeo encontrado.")
 
-        with open('output/videos_db.json', 'r') as f:
+        with open(os.path.join(video_db), 'r') as f:
             try:
                 videos = json.load(f)
             except json.JSONDecodeError:
