@@ -55,7 +55,7 @@ Agora o Aita VideoMaker conta com uma interface gráfica feita
    ```
 
 2. Instale os requisitos:
-    ```sh
+    ```bash
     pip install -r requirements.txt
     ```
 3. Instale o ffmpeg e o Image Magick (de acordo com sua distribuição)
