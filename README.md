@@ -103,11 +103,10 @@ As vozes em config/voices.json são uma questão pessoal, mas todas as vozes dis
 ## GUI 
 
 A interface gráfica pode ser acessada usando o seguinte script:
-
     ```sh
     python gui.py
     ```
-    
+
 Todas as funções da versão em modo texto estão disponíveis, incluindo funcionalidades novas como:
   - Edição do texto da postagem antes da geração da narração
   - Edição das configurações
