@@ -4,7 +4,6 @@ import re
 
 class UrlScreen(ft.View):
     def __init__(self, page, go_post_screen):
-        print("Initializing UrlScreen")
         super().__init__(route='/url_screen')
         self.page = page
         self.go_post_screen = go_post_screen
@@ -52,13 +51,3 @@ class UrlScreen(ft.View):
     def is_valid_reddit_url(self, url):
         regex = r"https?://(www\.)?reddit\.com/r/\w+/comments/\w+/.+"
         return re.match(regex, url) is not None
-
-# Exemplo de uso
-def main(page: ft.Page):
-    def go_post_screen(title, text):
-        print(f"Título: {title}\nTexto: {text}")
-
-    page.views.append(UrlScreen(page, go_post_screen))
-    page.update()
-
-ft.app(target=main)

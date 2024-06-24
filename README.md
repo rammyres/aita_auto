@@ -12,7 +12,7 @@ Credenciais de acesso (API keys) a AWS, Assembly.ai e Reddit sáo necessárias (
 
 ## Novidades
 
-Agora o Aita VideoMaker conta com uma interface gráfica feita em flet
+Agora o Aita VideoMaker conta com uma interface gráfica feita
 
 ## Funcionalidades
 
@@ -26,20 +26,24 @@ Agora o Aita VideoMaker conta com uma interface gráfica feita em flet
 
 - Python 3.x
 - Bibliotecas Python:
-  - flet
-  - moviepy
-  - praw (Python Reddit API Wrapper)
-  - boto3
-  - protobuf 
-  - yt_dlp
-  - opencv-python
-  - wand
   - assemblyai
-  - pydub
-  - playsound
-  - nltk
+  - blessed==1.20.0
+  - boto3
+  - contextualSpellCheck
+  - contextualSpellCheck
+  - flet
+  - lxml
+  - moviepy
   - mysmallutils
-  - blessed
+  - nltk
+  - playsound
+  - praw
+  - pysbd
+  - setuptools
+  - spacy
+  - tqdm
+  - yt_dlp
+
 
 ## Instalação
 
@@ -95,3 +99,25 @@ O script possui listas de palavrões (config/profanities.json) e siglas (config/
 Há também uma lista de videos do youtube (config/videos.json) para plano de fundo (sem copyright ou comentários, com tempo minimo de 3 minutos), que também pode ser ajustada de acordo com a necessidade.
 
 As vozes em config/voices.json são uma questão pessoal, mas todas as vozes disponíveis podem ser utilizadas. 
+
+## GUI 
+
+A interface gráfica pode ser acessada usando o seguinte script:
+    ```sh
+    python gui.py
+    ```
+Todas as funções da versão em modo texto estão disponíveis, incluindo funcionalidades novas como:
+  - Edição do texto da postagem antes da geração da narração
+  - Edição das configurações
+  - Prévia dos videos gerados 
+  - Cópia do caminho dos videos gerados a partir da lista de videos disponíveis
+
+  ## Screenshots
+  ![Tela principal](screenshots/main_screen.png)
+  ![Seleção de subrredits](screenshots/sub_list.png)
+  ![Seleção de postagens](screenshots/post_list.png)
+  ![Edição de postagem](screenshots/post_screen.png)
+  ![Geração de video](screenshots/generate_screen.png)
+  ![Lista de videos](screenshots/video_list.png)
+  ![Prévia de videos](screenshots/video_player.png)
+

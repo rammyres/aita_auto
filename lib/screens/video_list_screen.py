@@ -46,15 +46,17 @@ class VideoListView(ft.View):
                 return ft.Text("Nenhum vídeo encontrado.")
 
             for index, video in enumerate(videos):
+                parts = []
+                for v in video['videos']:
+                    part_name = v['video'][-5:]
+                    part_number = int(part_name[0])
+                    parts.append(ft.TextButton(f"Parte {part_number}", on_click=lambda e, p=v['video']: self.go_video_screen(p)))
                 title_card = ft.Card(
                     content=ft.Container(
                         content=ft.Column(
                             controls=[
                                 ft.Text(video['title'], weight=ft.FontWeight.BOLD),
-                                *[
-                                    ft.TextButton(f"Parte {i+1}", on_click=lambda e, p=part['video']: self.go_video_screen(p))
-                                    for i, part in enumerate(video['videos'])
-                                ],
+                                *parts,
                                 ft.ElevatedButton(
                                     text="Excluir",
                                     bgcolor=ft.colors.RED,
