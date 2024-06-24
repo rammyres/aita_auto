@@ -1,5 +1,5 @@
 import os 
-from lib.interface_utils import *
+from lib.utils.interface_utils import *
 
 # Remove arquivos temporários
 def remove_tmp():

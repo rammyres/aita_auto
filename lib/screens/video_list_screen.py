@@ -1,7 +1,7 @@
 import json
 import os
 import flet as ft
-from lib.data_utils import delete_video
+from lib.utils.data_utils import delete_video
 
 class VideoListView(ft.View):
     def __init__(self, page, go_video_screen, go_home):

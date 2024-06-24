@@ -2,13 +2,13 @@ import uuid
 import os
 import flet as ft
 import moviepy.editor as mp
-from lib.reddit_utils import *
-from lib.video_utils import *
-from lib.audio_utils import *
-from lib.subtitles_utils import *
-from lib.youtube_utils import *
-from lib.data_utils import *
-from lib.file_utils import mk_dirs, remove_tmp
+from lib.utils.reddit_utils import *
+from lib.utils.video_utils import *
+from lib.utils.audio_utils import *
+from lib.utils.subtitles_utils import *
+from lib.utils.youtube_utils import *
+from lib.utils.data_utils import *
+from lib.utils.file_utils import mk_dirs, remove_tmp
 from lib.widgets.processing_card import ProcessingCard
 
 class GenerateScreen(ft.View):
@@ -19,9 +19,9 @@ class GenerateScreen(ft.View):
         self.title = title
         self.text = ' '.join([title, text])
         self.voice = get_random_voice(gender)
-        self.audio_path = 'tmp/audio'
-        self.subtitles_path = 'tmp/subtitles'
-        self.bgvideo = 'tmp/__yt1__.mp4'
+        self.audio_path = os.path.join("tmp", "audio")
+        self.subtitles_path = os.path.join("tmp", "subtitles")
+        self.bgvideo = os.path.join("tmp","__yt1__.mp4")
         self.video_cards = []
         self.generated_videos = []
         self.generated_videos_buttons = []
@@ -82,7 +82,7 @@ class GenerateScreen(ft.View):
 
         for i, part in enumerate(self.text_parts):
             self.sb_notify(f"Gerando audio da parte {i+1}")
-            narration_filename = f"{self.audio_path}/__part_{i}__.mp3"
+            narration_filename = os.path.join(self.audio_path, f"__part_{i}__.mp3")
             text_to_speech(part, narration_filename, self.voice, "en-US", "mp3", engine='neural')
         self.processing_narration.update_check(is_complete=True)
         self.processing_narration.toggle_loading(False)
@@ -91,7 +91,9 @@ class GenerateScreen(ft.View):
         self.sb_notify("Gerando as legendas")
         self.processing_subtitles.toggle_loading(True)
         for i in range(len(self.text_parts)): 
-            generate_subtitles(f'{self.audio_path}/__part_{i}__.mp3', f'{self.subtitles_path}/__part_{i}.srt')
+            _audio_path=os.path.join(self.audio_path, f"__part_{i}__.mp3")
+            _subtitle_path= os.path.join(self.subtitles_path, f"__part_{i}.srt")
+            generate_subtitles(_audio_path, _subtitle_path)
         self.processing_subtitles.update_check(is_complete=True)
         self.processing_subtitles.toggle_loading(False)
 
@@ -104,20 +106,20 @@ class GenerateScreen(ft.View):
         self.processing_bgvideo.toggle_loading(False)
 
     def processing_videos(self):
-        bgvideo = mp.VideoFileClip("tmp/__yt1__.mp4")
-        output_path = f'output/{uuid.uuid4()}'
+        bgvideo = mp.VideoFileClip(self.bgvideo)
+        output_path = os.path.join("output", str(uuid.uuid4()))
         os.mkdir(output_path)
         for i in range(len(self.text_parts)):
             self.sb_notify(f"Gerando video parte {i+1}")
             self.video_cards[i].toggle_loading(True)
-            narration_audio = mp.AudioFileClip(f"{self.audio_path}/__part_{i}__.mp3") 
+            narration_audio = mp.AudioFileClip(os.path.join(self.audio_path, f"__part_{i}__.mp3")) 
             video_with_audio = bgvideo.set_audio(narration_audio) # Inclui o áudio no video de fundo
             formatted_video = format_video_to_9x16(video_with_audio)
             video_with_subtitles = add_subtitles_to_video(formatted_video, 
-                                                        f'{self.subtitles_path}/__part_{i}.srt', 
-                                                        i + 1, 
-                                                        len(self.text_parts))
-            output_filename = f'{output_path}/output_part_{i + 1}.mp4'
+                                                          os.path.join(self.subtitles_path, f"__part_{i}.srt"),
+                                                          i + 1, 
+                                                          len(self.text_parts))
+            output_filename = os.path.join(output_path, f"output_part_{i + 1}.mp4")
             export_single(video_with_subtitles, 
                         narration_audio.duration, 
                         output_filename)
@@ -143,7 +145,7 @@ class GenerateScreen(ft.View):
         
         save_to_json(video_data)
 
-        with open(f"{output_path}/fulltext.txt", 'w') as fp:
+        with open(os.path.join(output_path, "fulltext.txt"), 'w') as fp:
             fp.write(self.text)
         
         notify()

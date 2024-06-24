@@ -1,5 +1,5 @@
 import flet as ft
-from lib.reddit_utils import *
+from lib.utils.reddit_utils import *
 
 class PostListScreen(ft.View):
     def __init__(self, sub_name, go_home, go_post_screen):

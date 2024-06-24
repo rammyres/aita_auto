@@ -1,6 +1,6 @@
 import flet as ft
-from lib.reddit_utils import *
-from lib.interface_utils import suggest_gender
+from lib.utils.reddit_utils import *
+from lib.utils.interface_utils import suggest_gender
 
 class PostScreen(ft.View):
     def __init__(self, post_title, post_text, go_generate, go_home):

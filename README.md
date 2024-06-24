@@ -27,10 +27,8 @@ Agora o Aita VideoMaker conta com uma interface gráfica feita
 - Python 3.x
 - Bibliotecas Python:
   - assemblyai
-  - blessed==1.20.0
+  - blessed
   - boto3
-  - contextualSpellCheck
-  - contextualSpellCheck
   - flet
   - lxml
   - moviepy
@@ -39,8 +37,6 @@ Agora o Aita VideoMaker conta com uma interface gráfica feita
   - playsound
   - praw
   - pysbd
-  - setuptools
-  - spacy
   - tqdm
   - yt_dlp
 

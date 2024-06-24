@@ -2,7 +2,7 @@ import json, boto3, random, os
 import moviepy.editor as mp
 from playsound import playsound
 from lxml import etree
-from lib.reddit_utils import convert_to_ssml
+from lib.utils.reddit_utils import convert_to_ssml
 
 # Função para criar um segmento de áudio com silêncio
 def get_random_voice(gender):

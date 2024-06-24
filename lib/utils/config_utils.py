@@ -1,11 +1,14 @@
 import configparser
 import os
+import subprocess
+import sys
+import pkg_resources
 
 # Caminho para o arquivo de configuração
-reddit_config_file = os.path.join(os.path.dirname(__file__),'..','config', 'reddit_config.ini')
-aai_config_file = os.path.join(os.path.dirname(__file__),'..','config', 'aai.ini')
-aws_config_file = os.path.join(os.path.dirname(__file__), os.path.expanduser('~'),'.aws', 'credentials')
-main_configs_file = os.path.join(os.path.dirname(__file__),'..','config', 'aita_auto.ini')
+reddit_config_file = os.path.join(os.getcwd(),'config', 'reddit_config.ini')
+aai_config_file = os.path.join(os.getcwd(),'config', 'aai.ini')
+aws_config_file = os.path.join(os.path.expanduser('~'),'.aws', 'credentials')
+main_configs_file = os.path.join(os.getcwd(),'config', 'aita_auto.ini')
 
 def check_reddit_config():
     if not os.path.exists(reddit_config_file):
@@ -51,9 +54,8 @@ def check_aii_config():
             print("Arquivo de configuração escrito\n Se você estiver usando um repositório git inclua suas credenciais no .gitignore!")
 
 def get_aai_key():
-    config_file = os.path.join(os.path.dirname(__file__),'..','config', 'aai.ini')
     aai_config = configparser.ConfigParser()
-    aai_config.read(config_file)
+    aai_config.read(aai_config_file)
     return aai_config.get('aai_settings','key')
 
 def check_aws_config():
@@ -61,7 +63,7 @@ def check_aws_config():
         config = configparser.ConfigParser()
         
         print("O arquivo de configuração da AWS não existe")
-        aws_id = input("Insiera a id de acesso (aws access key id): ")
+        aws_id = input("Insira a id de acesso (aws access key id): ")
         aws_key = input("Insira a chave de acesso (aws access secret key): ")
         
         config.add_section('default')
@@ -75,15 +77,19 @@ def check_aws_config():
             config.write(f)
             print("Arquivo de configuração escrito\n Se você estiver usando um repositório git inclua suas credenciais no .gitignore!")
 
-def check_configs():
-    print("Verificando arquivos de configuração...")
-    check_reddit_config()
-    check_aii_config()
-    check_aws_config()
+def check_configs(mode):
+    _reddit_conf = not os.path.exists(reddit_config_file)
+    _aws_conf = not os.path.exists(aws_config_file)
+    _aai_conf = not os.path.exists(aai_config_file)
 
-import subprocess
-import sys
-import pkg_resources
+    if mode == 'gui' and any([_reddit_conf, _aws_conf, _aai_conf]):
+        return False
+    else:
+        print("Verificando arquivos de configuração...")
+        check_reddit_config()
+        check_aii_config()
+        check_aws_config()
+    return True
 
 def check_requirements(requirements_file):
     with open(requirements_file, 'r') as f:

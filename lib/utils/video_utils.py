@@ -55,23 +55,6 @@ def export_single(video, total_time, output_file):
     output = output.resize(height=1920).resize(width=1080)
     output.write_videofile(output_file, codec='libx264', fps=24)
 
-def export_sync(video, total_time):
-    export_single(video, total_time, 'tmp/__sync__.mp4')
-
-def export_segments(segments, output_path):
-    for j, segment in enumerate(segments):
-        part_label = mp.TextClip(f"Part {j+1}/2",font='Metropolis-black', 
-                                        fontsize=70, 
-                                        color='yellow',
-                                        stroke_color='black', 
-                                        method='label')
-        part_label.set_duration(segment.duration)
-        _segment = mp.CompositeVideoClip([segment, part_label.set_position(('center', 'bottom'))])
-        output_filename = f"{output_path}/output_segment_{j}.mp4"
-        _segment = _segment.set_duration(segment.duration)
-        _segment.write_videofile(output_filename, codec='libx264', fps=24)
-        print(f"Parte {j} salva como {output_filename}")
-
 # Função para formatar vídeo para 9x16
 def format_video_to_9x16(video):
     (w, h) = video.size

@@ -1,10 +1,9 @@
 import praw, json, re, random, nltk
-from lib.config_utils import *
+from lib.utils.config_utils import *
 from tqdm import tqdm
 from mysutils.text import remove_urls
 from nltk.tokenize import word_tokenize, sent_tokenize
 import pysbd
-import spacy, contextualSpellCheck
 
 # Estima o tempo da narração
 def estimate_time(text):
@@ -12,7 +11,7 @@ def estimate_time(text):
 
 def merge_accidental_splits(text):
     common_combinations = []
-    with open('config/common_combinations.json') as f:
+    with open(os.path.join('config', 'common_combinations.json')) as f:
         common_combinations = json.load(f)['combinations']
     
     words = word_tokenize(text)
@@ -171,23 +170,6 @@ def split_sentences(text):
     seg = pysbd.Segmenter(language='en', clean=False)
     return seg.segment(text)
 
-# Usa IA para fazer a verificação de texto 
-def spellCheck(text):
-
-    # phrases = nltk.sent_tokenize(text)
-    phrases = split_sentences(text)
-    nlp = spacy.load('en_core_web_lg')
-    contextualSpellCheck.add_to_pipe(nlp)
-    
-    for i, phrase in enumerate(phrases):
-        doc = nlp(phrase)
-        print(f'{i+1} - {phrase}')
-        if doc._.performed_spellCheck:
-            phrases[i] = doc._.outcome_spellCheck
-            print(f'{i+1} - Corrected - {phrases[i]}')
-    
-    return ' '.join(phrases)
-
 def convert_to_ssml(text):
     """
     Converte um texto longo para SSML.
@@ -222,7 +204,7 @@ def prepare_text(text):
     print("Ajustando contrações comuns")
     # List of common contractions
     contractions = dict()
-    with open('config/contractions.json') as f:
+    with open(os.path.join('config','contractions.json')) as f:
         contractions = json.load(f)
     
     # Repair contractions
@@ -247,7 +229,7 @@ def prepare_text(text):
     print("Trocando siglas pelos seus significados")
     # Troca siglas pelos seus significados
     acronyms_dict = dict()
-    with open('config/acronyms.json', 'r') as file:
+    with open(os.path.join('config','acronyms.json'), 'r') as file:
         acronyms_dict = json.load(file)
 
     for k, v in tqdm(acronyms_dict.items()):
@@ -256,7 +238,7 @@ def prepare_text(text):
     print("Removendo palavrões")
     # Remove palavrões e troca por eufemismos
     profanities = dict()
-    with open('config/profanities.json') as f:
+    with open(os.path.join('config','profanities.json')) as f:
         profanities = json.load(f)
     
     for profanity, replacement in tqdm(profanities.items()):
@@ -265,7 +247,7 @@ def prepare_text(text):
     print("Unindo textos indevidamente quebrados pelos processos anteriores")
     # List of common combiantions
     common_combinations = dict()
-    with open('config/common_combinations.json') as f:
+    with open(os.path.join('config','common_combinations.json')) as f:
         common_combinations = json.load(f)
     
     # Repair common combinations

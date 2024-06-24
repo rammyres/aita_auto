@@ -1,5 +1,5 @@
 import flet as ft
-from lib.reddit_utils import get_story_from_url
+from lib.utils.reddit_utils import get_story_from_url
 import re
 
 class UrlScreen(ft.View):

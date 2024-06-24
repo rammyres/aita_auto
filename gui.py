@@ -8,6 +8,7 @@ from lib.screens.video_screen import VideoView
 from lib.screens.video_list_screen import VideoListView
 from lib.screens.url_post_screen import UrlScreen
 from lib.screens.config_screen import ConfigScreen
+from lib.utils.reddit_utils import check_configs
 
 def main(page: ft.Page):
     page.title = "Aita Auto VideoMaker"
@@ -80,7 +81,11 @@ def main(page: ft.Page):
         page.update()
 
     # Start the app with the home view
-    go_home()
+
+    if not check_configs('gui'):
+        show_config_screen(page)
+    else:
+        go_home()
 
     def on_back(e):
         if len(page.views) > 1:
