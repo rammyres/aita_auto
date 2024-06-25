@@ -1,3 +1,4 @@
+
 import flet as ft
 
 class SubredditCard(ft.UserControl):
@@ -8,7 +9,9 @@ class SubredditCard(ft.UserControl):
         self.go_select_post = go_select_post
     
     def build(self):
-        return ft.Card(
+        return ft.Container(
+            content=ft.GestureDetector(
+                on_tap=lambda e: self.go_select_post(self.subreddit_name),
                 content=ft.Container(
                     content=ft.Column(
                         alignment=ft.MainAxisAlignment.SPACE_EVENLY,
@@ -16,29 +19,32 @@ class SubredditCard(ft.UserControl):
                             ft.Text(
                                 self.subreddit_name,
                                 size=20,
-                                weight=ft.FontWeight.BOLD
+                                weight=ft.FontWeight.BOLD,
+                                color=ft.colors.WHITE
                             ),
-                            ft.Text(self.subreddit_description, size=14),
-                            ft.ElevatedButton(
-                                text="Selecionar",
-                                on_click=lambda e: self.go_select_post(self.subreddit_name),
-                                bgcolor=ft.colors.BLUE,
-                                color=ft.colors.WHITE,
-                                style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10))
-                            )
+                            ft.Text(
+                                self.subreddit_description,
+                                size=14,
+                                color=ft.colors.WHITE
+                            ),
                         ],
-                        spacing=10,
-                        # alignment=ft.MainAxisAlignment.START
+                        spacing=10
                     ),
-                    padding=10,
-                    border_radius=15,
+                    padding=15,
+                    border_radius=ft.border_radius.all(15),
+                    gradient=ft.LinearGradient(
+                        begin=ft.alignment.top_left,
+                        end=ft.alignment.bottom_right,
+                        colors=[ft.colors.BLUE, ft.colors.LIGHT_BLUE_100]
+                    ),
                     shadow=ft.BoxShadow(
                         blur_radius=10,
                         spread_radius=2,
                         color=ft.colors.GREY
-                    ),
-                    bgcolor=ft.colors.WHITE
-                ),
-                width=300,
-                margin=10
-            )
+                    )
+                )
+            ),
+            width=300,
+            margin=10,
+            border_radius=ft.border_radius.all(15),
+        )
