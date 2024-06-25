@@ -46,7 +46,7 @@ class ConfigScreen(ft.View):
         self.acronym_key = ft.TextField(label="Acrônimo")
         self.acronym_value = ft.TextField(label="Descrição")
         self.add_acronym_button = ft.ElevatedButton(text="Adicionar", on_click=self.add_acronym)
-        self.acronyms_list = ft.ListView(expand=True)
+        self.acronyms_list = ft.ListView(expand=True, auto_scroll=True)
 
         self.common_combination_key = ft.TextField(label="Combinacão Comum")
         self.common_combination_value = ft.TextField(label="Descrição")
@@ -62,7 +62,7 @@ class ConfigScreen(ft.View):
         self.profanity_value = ft.TextField(label="Descrição")
         self.add_profanity_button = ft.ElevatedButton(text="Adicionar", on_click=self.add_profanity)
         self.profanities_list = ft.ListView(expand=True)
-
+        
         self.subreddit_name = ft.TextField(label="Nome do Subreddit")
         self.subreddit_description = ft.TextField(label="Descrição")
         self.add_subreddit_button = ft.ElevatedButton(text="Adicionar", on_click=self.add_subreddit)
@@ -70,7 +70,8 @@ class ConfigScreen(ft.View):
 
         self.video_url = ft.TextField(label="URL do Vídeo")
         self.add_video_button = ft.ElevatedButton(text="Adicionar", on_click=self.add_video)
-        self.videos_list = ft.ListView(expand=True)
+        self.videos_column = ft.Column(expand=1, spacing=10, auto_scroll=True)
+        self.videos_list = ft.Container(content=self.videos_column, expand=1)
 
         self.voice_female_name = ft.TextField(label="Nome da Voz Feminina")
         self.add_voice_female_button = ft.ElevatedButton(text="Adicionar", on_click=lambda e: self.add_voice(e, 'females'))
@@ -119,12 +120,12 @@ class ConfigScreen(ft.View):
                                     self.acronym_key,
                                     self.acronym_value,
                                     self.add_acronym_button,
-                                    self.acronyms_list
+                                    ft.Container(height=200, content=self.acronyms_list, expand=True)
                                 ],
                                 spacing=10,
                                 alignment=ft.MainAxisAlignment.START,
                                 horizontal_alignment=ft.CrossAxisAlignment.START,
-                        )
+                            )
                         )
                     ),
                     ft.Tab(
@@ -197,9 +198,7 @@ class ConfigScreen(ft.View):
                     ),
                     ft.Tab(
                         text="Vídeos",
-                        content=ft.Container(
-                            height=500,
-                            content=ft.Column(
+                        content=ft.Column(
                                 controls=[
                                     self.video_url,
                                     self.add_video_button,
@@ -208,7 +207,6 @@ class ConfigScreen(ft.View):
                                 spacing=10,
                                 alignment=ft.MainAxisAlignment.START,
                                 horizontal_alignment=ft.CrossAxisAlignment.START,
-                            )
                         )
                     ),
                     ft.Tab(
@@ -562,9 +560,9 @@ class ConfigScreen(ft.View):
             print(f"Erro ao salvar vídeos: {e}")
 
     def update_videos_list(self):
-        self.videos_list.controls.clear()
+        self.videos_column.controls.clear()
         for item in self.videos:
-            self.videos_list.controls.append(
+            self.videos_column.controls.append(
                 ft.ListTile(
                     title=ft.Text(f"{item['video']}"),
                     trailing=ft.IconButton(
