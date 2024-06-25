@@ -169,6 +169,7 @@ class ConfigScreen(ft.View):
                             height=500,
                             content=ft.Column(
                                 controls=[
+                                    ft.Text("Coloque aqui palavrões que devem ser filtrados durante o tratamento do texto. Eles serão substituidos pelo eufemismo inclusos."),
                                     self.profanity_key,
                                     self.profanity_value,
                                     self.add_profanity_button,
