@@ -46,7 +46,7 @@ class ConfigScreen(ft.View):
         self.acronym_key = ft.TextField(label="Acrônimo")
         self.acronym_value = ft.TextField(label="Descrição")
         self.add_acronym_button = ft.ElevatedButton(text="Adicionar", on_click=self.add_acronym)
-        self.acronyms_list = ft.ListView(expand=True, auto_scroll=True)
+        self.acronyms_list = ft.ListView(expand=True)
 
         self.common_combination_key = ft.TextField(label="Combinacão Comum")
         self.common_combination_value = ft.TextField(label="Descrição")
@@ -70,8 +70,7 @@ class ConfigScreen(ft.View):
 
         self.video_url = ft.TextField(label="URL do Vídeo")
         self.add_video_button = ft.ElevatedButton(text="Adicionar", on_click=self.add_video)
-        self.videos_column = ft.Column(expand=1, spacing=10, auto_scroll=True)
-        self.videos_list = ft.Container(content=self.videos_column, expand=1)
+        self.videos_list = ft.ListView(expand=True)
 
         self.voice_female_name = ft.TextField(label="Nome da Voz Feminina")
         self.add_voice_female_button = ft.ElevatedButton(text="Adicionar", on_click=lambda e: self.add_voice(e, 'females'))
@@ -90,6 +89,8 @@ class ConfigScreen(ft.View):
         
         self.controls.append(
             ft.Tabs(
+                scrollable=True,
+                expand=1,
                 tabs=[
                     ft.Tab(
                         text="APIs e Credenciais",
@@ -120,7 +121,7 @@ class ConfigScreen(ft.View):
                                     self.acronym_key,
                                     self.acronym_value,
                                     self.add_acronym_button,
-                                    ft.Container(height=200, content=self.acronyms_list, expand=True)
+                                    self.acronyms_list
                                 ],
                                 spacing=10,
                                 alignment=ft.MainAxisAlignment.START,
@@ -213,6 +214,11 @@ class ConfigScreen(ft.View):
                         text="Vozes",
                         content=ft.Column(
                             controls=[
+                                ft.Row(controls=[
+                                    ft.Text("Você pode adicionar qualquer foz da AWS, em en-us"),
+                                    ft.TextButton("Vozes disponíveis", on_click=lambda e: self.page.launch_url("https://docs.aws.amazon.com/polly/latest/dg/available-voices.html"))
+                                ]),
+                                
                                 self.voice_female_name,
                                 self.add_voice_female_button,
                                 self.voice_male_name,
@@ -560,9 +566,9 @@ class ConfigScreen(ft.View):
             print(f"Erro ao salvar vídeos: {e}")
 
     def update_videos_list(self):
-        self.videos_column.controls.clear()
+        self.videos_list.controls.clear()
         for item in self.videos:
-            self.videos_column.controls.append(
+            self.videos_list.controls.append(
                 ft.ListTile(
                     title=ft.Text(f"{item['video']}"),
                     trailing=ft.IconButton(

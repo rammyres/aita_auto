@@ -92,6 +92,6 @@ def main(page: ft.Page):
             page.views.pop()
             page.update()
         else:
-            page.window.close()
+            page.window_close()
 
 ft.app(target=main)

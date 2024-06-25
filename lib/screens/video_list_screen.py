@@ -27,12 +27,12 @@ class VideoListView(ft.View):
                                   on_click=go_home)
                 ]
             ),
-            ft.Container(height=500, content=self.build_video_list()),
+            ft.Container(height=500, expand=1, content=self.build_video_list()),
         ]
 
     def build_video_list(self):
         video_db = os.path.join('output', 'videos_db.json')
-        video_list = ft.Column()
+        video_list = ft.ListView(expand=1)
         if not os.path.exists(video_db):
             return ft.Text("Nenhum vídeo encontrado.")
 
@@ -88,3 +88,7 @@ class VideoListView(ft.View):
         # Recarregar a lista de vídeos
         self.controls[1].content = self.build_video_list()
         self.page.update()
+    
+    def did_mount(self):
+        self.page.scroll = ft.ScrollMode.ALWAYS
+        return super().did_mount()
