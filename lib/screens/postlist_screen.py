@@ -3,7 +3,7 @@ from lib.utils.reddit_utils import *
 
 class PostListScreen(ft.View):
     def __init__(self, sub_name, go_home, go_post_screen):
-        super().__init__(route="/postlist_screen")
+        super().__init__(route="/postlist")
         self.sub_name = sub_name
         self.go_home = go_home
         self.go_post_screen = go_post_screen
@@ -69,7 +69,7 @@ class PostListScreen(ft.View):
                             bgcolor=ft.colors.BLUE,
                             color=ft.colors.WHITE,
                             style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
-                            on_click=lambda e: self.go_post_screen(post_name, post_text)
+                            on_click=lambda e: self.go_post_screen(f'{post_name}|{post_text}')
                         ),
                         ft.TextButton(text="Link do post", on_click=lambda e: self.page.launch_url(post_url))
                     ],

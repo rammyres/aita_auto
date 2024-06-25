@@ -13,7 +13,7 @@ from lib.widgets.processing_card import ProcessingCard
 
 class GenerateScreen(ft.View):
     def __init__(self, page, title, text, gender, go_video_screen, go_home):
-        super().__init__(route="/generate_screen")
+        super().__init__(route="/generate")
         self.page = page  # Referência à página
         self.go_video_screen = go_video_screen
         self.title = title

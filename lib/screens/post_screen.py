@@ -4,7 +4,7 @@ from lib.utils.interface_utils import suggest_gender
 
 class PostScreen(ft.View):
     def __init__(self, post_title, post_text, go_generate, go_home):
-        super().__init__(route="/post_screen")
+        super().__init__(route="/post")
         self.gender = None
         self.go_home = go_home
         self.go_generate = go_generate
@@ -12,7 +12,7 @@ class PostScreen(ft.View):
         self.post_text = prepare_text(post_text)
         
         def finished_text_action(e=None):
-            self.go_generate(self.post_title, self.post_text,self.gender)
+            self.go_generate(f"{self.post_title}|{self.post_text}|{self.gender}")
             
         self.title_input = ft.TextField(
             value=self.post_title, 

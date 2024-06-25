@@ -3,7 +3,7 @@ import os
 
 class VideoView(ft.View):
     def __init__(self, page, video_path, go_home):
-        super().__init__(route="/video_view")
+        super().__init__(route="/video")
         self.page = page
         self.video_path = video_path
         self.go_home = go_home
