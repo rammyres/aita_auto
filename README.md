@@ -110,17 +110,5 @@ Todas as funções da versão em modo texto estão disponíveis, incluindo funci
   - Cópia do caminho dos videos gerados a partir da lista de videos disponíveis
 
   ## Screenshots
-  ![Tela principal](screenshots/main_screen.png)
-
-  ![Seleção de subrredits](screenshots/sub_list.png)
-
-  ![Seleção de postagens](screenshots/post_list.png)
-
-  ![Edição de postagem](screenshots/post_screen.png)
-
-  ![Geração de video](screenshots/generate_screen.png)
-
-  ![Lista de videos](screenshots/video_list.png)
-  
-  ![Prévia de videos](screenshots/video_player.png)
+  <img src="https://github.com/rammyres/aita_auto/assets/17151666/7844b9dc-c197-4cd6-91ec-787706f0bd15" width="15%"></img> <img src="https://github.com/rammyres/aita_auto/assets/17151666/8623c443-22b3-41fe-80f7-bbbc7412e28b" width="15%"></img> <img src="https://github.com/rammyres/aita_auto/assets/17151666/9ad3b862-5a70-464b-a5fd-0a6eabb0c6ea" width="15%"></img> <img src="https://github.com/rammyres/aita_auto/assets/17151666/66b17c26-0af0-46d3-868d-15c94960c78e" width="15%"></img> <img src="https://github.com/rammyres/aita_auto/assets/17151666/72fa9941-9e74-456b-b38b-5ce70cceca8b" width="15%"></img> <img src="https://github.com/rammyres/aita_auto/assets/17151666/087e034d-cb68-46d2-8ac8-7972ab1628f1" width="15%"></img> <img src="https://github.com/rammyres/aita_auto/assets/17151666/e1f60fd0-42d1-4976-9770-9033992908a5" width="15%"></img> <img src="https://github.com/rammyres/aita_auto/assets/17151666/a0150103-b59c-4384-9228-53a3d6726f1d" width="15%"></img> 
 
