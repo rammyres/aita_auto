@@ -8,6 +8,8 @@ Este é um script Python para criar vídeos automáticos com histórias de vári
 
   - Não há correção de texto por padrão, mas alguns erros na geração do texto provocadas pela PRAW são minimizadas através de NLTK
 
+  - Também é possível editar o texto antes da geração da narração em modo gráfico (veja a sessão GUI abaixo)
+
 Credenciais de acesso (API keys) a AWS, Assembly.ai e Reddit sáo necessárias (todos os serviços tem tiers gratuítos generosos)
 
 ## Novidades
@@ -27,10 +29,8 @@ Agora o Aita VideoMaker conta com uma interface gráfica feita
 - Python 3.x
 - Bibliotecas Python:
   - assemblyai
-  - blessed==1.20.0
+  - blessed
   - boto3
-  - contextualSpellCheck
-  - contextualSpellCheck
   - flet
   - lxml
   - moviepy
@@ -39,8 +39,6 @@ Agora o Aita VideoMaker conta com uma interface gráfica feita
   - playsound
   - praw
   - pysbd
-  - setuptools
-  - spacy
   - tqdm
   - yt_dlp
 
@@ -114,11 +112,5 @@ Todas as funções da versão em modo texto estão disponíveis, incluindo funci
   - Cópia do caminho dos videos gerados a partir da lista de videos disponíveis
 
   ## Screenshots
-  ![Tela principal](screenshots/main_screen.png)
-  ![Seleção de subrredits](screenshots/sub_list.png)
-  ![Seleção de postagens](screenshots/post_list.png)
-  ![Edição de postagem](screenshots/post_screen.png)
-  ![Geração de video](screenshots/generate_screen.png)
-  ![Lista de videos](screenshots/video_list.png)
-  ![Prévia de videos](screenshots/video_player.png)
+  <img src="https://github.com/rammyres/aita_auto/assets/17151666/b71370e3-ab51-4c96-9b3e-281e73bbfb6b" width="23%"></img> <img src="https://github.com/rammyres/aita_auto/assets/17151666/8f609d4f-2c19-4d78-b9b1-2cfabdda6dd0" width="23%"></img> <img src="https://github.com/rammyres/aita_auto/assets/17151666/1566d7fa-ffa3-47d1-bf55-695d49c32c44" width="23%"></img> <img src="https://github.com/rammyres/aita_auto/assets/17151666/06a556a3-5d17-4b58-93a5-3c1e0bdcb691" width="23%"></img> <img src="https://github.com/rammyres/aita_auto/assets/17151666/32cb7df5-f90f-486f-820a-59dec203f7c5" width="23%"></img> <img src="https://github.com/rammyres/aita_auto/assets/17151666/c9b77c45-07a8-4266-bdf7-5f239182dbdd" width="23%"></img> <img src="https://github.com/rammyres/aita_auto/assets/17151666/1c07fe74-a4cb-4787-b456-ee51c312686d" width="23%"></img> <img src="https://github.com/rammyres/aita_auto/assets/17151666/3c7e2cf7-db4f-4b75-a501-ee451179b3e9" width="23%"></img> 
 

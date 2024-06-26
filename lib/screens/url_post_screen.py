@@ -1,14 +1,23 @@
 import flet as ft
-from lib.reddit_utils import get_story_from_url
+from lib.utils.reddit_utils import get_story_from_url
 import re
 
 class UrlScreen(ft.View):
-    def __init__(self, page, go_post_screen):
-        super().__init__(route='/url_screen')
+    def __init__(self, page, go_post_screen, go_home):
+        super().__init__(route='/url')
         self.page = page
         self.go_post_screen = go_post_screen
 
-        self.appbar = ft.AppBar(leading=ft.Text("Postagem a partir de URL de post"), color=ft.colors.WHITE)
+        self.appbar = ft.AppBar(
+                    title=ft.Text("Insira a URL do post", color=ft.colors.WHITE), 
+                    actions=[ft.IconButton(
+                        icon=ft.icons.HOME_FILLED, 
+                        icon_size=30,
+                        icon_color=ft.colors.WHITE,
+                        on_click=go_home,
+                    )],
+                    center_title=True, 
+                    bgcolor=ft.colors.BLUE)
         self.url_field = ft.TextField(label="Insira a URL")
 
         self.error_message = ft.Text("", color=ft.colors.RED)
@@ -44,7 +53,7 @@ class UrlScreen(ft.View):
             )
             self.update()
             story = get_story_from_url(url)
-            self.go_post_screen(story['title'], story['text'])
+            self.go_post_screen(f"{story['title']}|{story['text']}")
             self.url_field.disabled = True
             self.update()
 

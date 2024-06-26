@@ -2,8 +2,8 @@
 
 import time
 import assemblyai as aai
-from lib.interface_utils import *
-from lib.config_utils import get_aai_key
+from lib.utils.interface_utils import *
+from lib.utils.config_utils import get_aai_key
 
 def generate_subtitles(narration_file, output_file):
     config = aai.TranscriptionConfig(speech_model=aai.SpeechModel.best, punctuate=True, format_text=True)

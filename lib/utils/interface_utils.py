@@ -1,6 +1,6 @@
 from blessed import Terminal
-from lib.reddit_utils import *
-from lib.data_utils import list_videos, delete_video
+from lib.utils.reddit_utils import *
+from lib.utils.data_utils import list_videos, delete_video
 import json, sys
 
 term = Terminal()

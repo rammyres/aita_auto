@@ -1,7 +1,7 @@
 import json
 import os
 import flet as ft
-from lib.data_utils import delete_video
+from lib.utils.data_utils import delete_video
 
 class VideoListView(ft.View):
     def __init__(self, page, go_video_screen, go_home):
@@ -19,24 +19,24 @@ class VideoListView(ft.View):
                     color=ft.colors.WHITE
                 ),
                 center_title=True,
-                bgcolor=ft.colors.BLUE
-            ),
-            ft.Container(height=500, content=self.build_video_list()),
-            ft.ElevatedButton(
-                text="Voltar para home",
                 bgcolor=ft.colors.BLUE,
-                color=ft.colors.WHITE,
-                style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
-                on_click=lambda e: self.go_home()
-            )
+                actions=[
+                    ft.IconButton(icon=ft.icons.HOME_FILLED,
+                                  icon_color=ft.colors.WHITE, 
+                                  icon_size=30, 
+                                  on_click=go_home)
+                ]
+            ),
+            ft.Container(height=500, expand=1, content=self.build_video_list()),
         ]
 
     def build_video_list(self):
-        video_list = ft.Column()
-        if not os.path.exists('output/videos_db.json'):
+        video_db = os.path.join('output', 'videos_db.json')
+        video_list = ft.ListView(expand=1)
+        if not os.path.exists(video_db):
             return ft.Text("Nenhum vídeo encontrado.")
 
-        with open('output/videos_db.json', 'r') as f:
+        with open(os.path.join(video_db), 'r') as f:
             try:
                 videos = json.load(f)
             except json.JSONDecodeError:
@@ -88,3 +88,7 @@ class VideoListView(ft.View):
         # Recarregar a lista de vídeos
         self.controls[1].content = self.build_video_list()
         self.page.update()
+    
+    def did_mount(self):
+        self.page.scroll = ft.ScrollMode.ALWAYS
+        return super().did_mount()

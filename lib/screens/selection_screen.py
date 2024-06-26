@@ -22,7 +22,7 @@ class SelectionScreen(ft.View):
             grid.controls.append(SubredditCard(sr['name'], sr['description'], go_select_post))
 
         super().__init__(
-            route="/selection_screen",
+            route="/selection",
             controls=[
                 ft.AppBar(
                     title=ft.Text("Escolha um subreddit", color=ft.colors.WHITE), 
