@@ -8,6 +8,8 @@ Este é um script Python para criar vídeos automáticos com histórias de vári
 
   - Não há correção de texto por padrão, mas alguns erros na geração do texto provocadas pela PRAW são minimizadas através de NLTK
 
+  - Também é possível editar o texto antes da geração da narração em modo gráfico (veja a sessão GUI abaixo)
+
 Credenciais de acesso (API keys) a AWS, Assembly.ai e Reddit sáo necessárias (todos os serviços tem tiers gratuítos generosos)
 
 ## Novidades
