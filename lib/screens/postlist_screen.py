@@ -74,7 +74,7 @@ class PostListScreen(ft.View):
                         ft.TextButton(text="Link do post", on_click=lambda e: self.page.launch_url(post_url))
                     ],
                     spacing=10,
-                    alignment=ft.MainAxisAlignment.START
+                    alignment=ft.MainAxisAlignment.CENTER
                 ),
                 padding=10,
                 border_radius=15,
