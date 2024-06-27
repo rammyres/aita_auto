@@ -1,4 +1,5 @@
 import flet as ft
+import os
 from lib.screens.main_screen import MainScreen
 from lib.screens.selection_screen import SelectionScreen
 from lib.screens.postlist_screen import PostListScreen
@@ -47,9 +48,8 @@ def main(page: ft.Page):
 
     # Handling route changes
     def route_change(route):
-        # page.views.clear()
-
         if page.route == '/':
+            page.views.clear()
             page.views.append(MainScreen(
                 show_selection=show_selection, 
                 show_video_list=show_video_list,
@@ -71,7 +71,7 @@ def main(page: ft.Page):
             ))
         elif page.route.startswith('/post/'):
             parts = page.route.split('/')[2:]
-            post_title, post_text = parts[0], parts[1]
+            post_title, post_text = parts[0], " ".join(parts[1:])
             page.views.append(PostScreen(
                 post_title=post_title, 
                 post_text=post_text, 
@@ -90,7 +90,8 @@ def main(page: ft.Page):
                 go_home=go_home
             ))
         elif page.route.startswith('/video/'):
-            video_path = page.route.split('/')[2]
+            video_path = os.path.join(*page.route.split('/')[2:])
+            
             page.views.append(VideoView(
                 page, 
                 video_path=video_path, 

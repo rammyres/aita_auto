@@ -10,6 +10,7 @@ class SubredditCard(ft.UserControl):
     
     def build(self):
         return ft.Container(
+            ink=True,
             content=ft.GestureDetector(
                 on_tap=lambda e: self.go_select_post(self.subreddit_name),
                 content=ft.Container(
