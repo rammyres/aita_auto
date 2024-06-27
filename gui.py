@@ -71,7 +71,8 @@ def main(page: ft.Page):
             ))
         elif page.route.startswith('/post/'):
             parts = page.route.split('/')[2:]
-            post_title, post_text = parts[0], parts[1]
+            print(parts[2:])
+            post_title, post_text = parts[0], " ".join(parts[1:])
             page.views.append(PostScreen(
                 post_title=post_title, 
                 post_text=post_text, 
