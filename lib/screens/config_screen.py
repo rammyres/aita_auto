@@ -2,8 +2,9 @@ import configparser, os, json
 import flet as ft
 
 class ConfigScreen(ft.View):
-    def __init__(self, page, go_home):
+    def __init__(self, page, first_run, go_home):
         super().__init__(route='/config_screen')
+        self.first_run = first_run
         self.aws_config_file = os.path.join(os.path.expanduser('~'), '.aws', 'credentials')
         self.aai_config_file = os.path.join(os.getcwd(), 'config', 'aai.ini')
         self.reddit_config_file = os.path.join(os.getcwd(), 'config', 'reddit_config.ini')
@@ -86,6 +87,39 @@ class ConfigScreen(ft.View):
                 bgcolor=ft.colors.BLUE,
             )
         )
+
+        self.api_column = ft.Column(spacing=10,
+                                    alignment=ft.MainAxisAlignment.START,
+                                    horizontal_alignment=ft.CrossAxisAlignment.START,
+                                    )
+        
+        if self.first_run == 'first':
+            self.api_column.controls.append(
+                ft.Text("Você precisa configurar as APIs para que este app funcione corretamente",
+                        style=ft.TextStyle(
+                            font_family='roboto',
+                            size=20,
+                            weight=ft.FontWeight.BOLD,
+                            color=ft.colors.GREY
+                            ),
+                        ),
+                )
+
+        self.api_column.controls.extend([
+                ft.Text("Configurações da API Reddit", size=20, weight=ft.FontWeight.BOLD),
+                self.reddit_client_id,
+                self.reddit_client_secret,
+                self.reddit_user_agent,
+                ft.Text("Configurações da API Assembly.ai", size=20, weight=ft.FontWeight.BOLD),
+                self.aai_key,
+                ft.Text("Configurações de credenciais AWS", size=20, weight=ft.FontWeight.BOLD),
+                self.aws_access_key_id,
+                self.aws_secret_access_key,
+                self.save_button,
+                ],
+        )
+
+        
         
         self.controls.append(
             ft.Tabs(
@@ -94,23 +128,7 @@ class ConfigScreen(ft.View):
                 tabs=[
                     ft.Tab(
                         text="APIs e Credenciais",
-                        content=ft.Column(
-                            controls=[
-                                ft.Text("Configurações da API Reddit", size=20, weight=ft.FontWeight.BOLD),
-                                self.reddit_client_id,
-                                self.reddit_client_secret,
-                                self.reddit_user_agent,
-                                ft.Text("Configurações da API Assembly.ai", size=20, weight=ft.FontWeight.BOLD),
-                                self.aai_key,
-                                ft.Text("Configurações de credenciais AWS", size=20, weight=ft.FontWeight.BOLD),
-                                self.aws_access_key_id,
-                                self.aws_secret_access_key,
-                                self.save_button,
-                            ],
-                            spacing=10,
-                            alignment=ft.MainAxisAlignment.START,
-                            horizontal_alignment=ft.CrossAxisAlignment.START,
-                        )
+                        content=self.api_column,
                     ),
                     ft.Tab(
                         text="Acrônimos",

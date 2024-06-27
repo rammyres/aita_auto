@@ -109,9 +109,14 @@ def main(page: ft.Page):
                 go_post_screen=show_post_screen,
                 go_home=go_home
             ))
-        elif page.route == '/config':
+        elif page.route.startswith('/config'):
+            first_run = ''
+            route_split = page.route.split("/")
+            if len(route_split)>2:
+                first_run = route_split[2] 
             page.views.append(ConfigScreen(
                 page, 
+                first_run=first_run,
                 go_home=go_home
             ))
 
@@ -124,7 +129,7 @@ def main(page: ft.Page):
 
     # Start the app with the home view
     if not check_configs('gui'):
-        page.go('/config')
+        page.go('/config/first')
     else:
         go_home()
 
