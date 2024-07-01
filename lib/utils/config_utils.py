@@ -10,6 +10,23 @@ aai_config_file = os.path.join(os.getcwd(),'config', 'aai.ini')
 aws_config_file = os.path.join(os.path.expanduser('~'),'.aws', 'credentials')
 main_configs_file = os.path.join(os.getcwd(),'config', 'aita_auto.ini')
 
+def check_configs(mode):
+    _reddit_conf = not os.path.exists(reddit_config_file)
+    _aws_conf = not os.path.exists(aws_config_file)
+    _aai_conf = not os.path.exists(aai_config_file)
+
+    if mode == 'gui':
+        print("ok")
+        if any([_reddit_conf, _aws_conf, _aai_conf]):
+            return False
+    else:
+        print("Verificando arquivos de configuração...")
+        check_reddit_config()
+        check_aii_config()
+        check_aws_config()
+    return True
+
+
 def check_reddit_config():
     if not os.path.exists(reddit_config_file):
         config = configparser.ConfigParser()
@@ -30,14 +47,20 @@ def check_reddit_config():
 
 # Função para carregar configurações do Reddit
 def load_reddit_config():
-    check_reddit_config()
-    config = configparser.ConfigParser()
-    config.read(reddit_config_file)
-    return {
-        'client_id': config.get('reddit', 'client_id'),
-        'client_secret': config.get('reddit', 'client_secret'),
-        'user_agent': config.get('reddit', 'user_agent')
-    }
+    try:
+        config = configparser.ConfigParser()
+        config.read(reddit_config_file)
+        return {
+            'client_id': config.get('reddit', 'client_id'),
+            'client_secret': config.get('reddit', 'client_secret'),
+            'user_agent': config.get('reddit', 'user_agent')
+        }
+    except:
+        return {
+            'client_id': '',
+            'client_secret': '',
+            'user_agent': ''
+        }
 
 def check_aii_config():
     if not os.path.exists(aai_config_file):
@@ -77,19 +100,6 @@ def check_aws_config():
             config.write(f)
             print("Arquivo de configuração escrito\n Se você estiver usando um repositório git inclua suas credenciais no .gitignore!")
 
-def check_configs(mode):
-    _reddit_conf = not os.path.exists(reddit_config_file)
-    _aws_conf = not os.path.exists(aws_config_file)
-    _aai_conf = not os.path.exists(aai_config_file)
-
-    if mode == 'gui' and any([_reddit_conf, _aws_conf, _aai_conf]):
-        return False
-    else:
-        print("Verificando arquivos de configuração...")
-        check_reddit_config()
-        check_aii_config()
-        check_aws_config()
-    return True
 
 def check_requirements(requirements_file):
     with open(requirements_file, 'r') as f:
