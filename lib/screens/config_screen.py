@@ -73,10 +73,20 @@ class ConfigScreen(ft.View):
         self.add_video_button = ft.ElevatedButton(text="Adicionar", on_click=self.add_video)
         self.videos_list = ft.ListView(expand=True)
 
-        self.voice_female_name = ft.TextField(label="Nome da Voz Feminina")
-        self.add_voice_female_button = ft.ElevatedButton(text="Adicionar", on_click=lambda e: self.add_voice(e, 'females'))
-        self.voice_male_name = ft.TextField(label="Nome da Voz Masculina")
-        self.add_voice_male_button = ft.ElevatedButton(text="Adicionar", on_click=lambda e: self.add_voice(e, 'males'))
+        self.voice_name = ft.TextField(label="Nome da Voz", width=self.page.width-200)
+        self.voice_gender_ddm = ft.Dropdown(
+            label="Gênero",
+            options=[
+                ft.dropdown.Option(text="Masculino",key="males"),
+                ft.dropdown.Option(text="Feminino", key="females"),
+            ], 
+            width=150
+        )
+        self.voice_add_button = ft.ElevatedButton(text="Adicionar", on_click=lambda e: self.add_voice(e, 
+                                                                                                      self.voice_gender_ddm.value,
+                                                                                                      self.voice_name.value)
+                                                                                                      )
+
         self.voices_list = ft.ListView(expand=True)
 
         self.controls.append(
@@ -187,7 +197,7 @@ class ConfigScreen(ft.View):
                             height=500,
                             content=ft.Column(
                                 controls=[
-                                    ft.Text("Coloque aqui palavrões que devem ser filtrados durante o tratamento do texto. Eles serão substituidos pelo eufemismo inclusos."),
+                                    ft.Text("Coloque aqui palavrões que devem ser filtrados durante o tratamento do texto. Eles serão substituidos pelos eufemismos inclusos."),
                                     self.profanity_key,
                                     self.profanity_value,
                                     self.add_profanity_button,
@@ -234,14 +244,14 @@ class ConfigScreen(ft.View):
                         content=ft.Column(
                             controls=[
                                 ft.Row(controls=[
-                                    ft.Text("Você pode adicionar qualquer foz da AWS, em en-us"),
+                                    ft.Text("Você pode adicionar qualquer voz da AWS Polly, em en-us"),
                                     ft.TextButton("Vozes disponíveis", on_click=lambda e: self.page.launch_url("https://docs.aws.amazon.com/polly/latest/dg/available-voices.html"))
                                 ]),
                                 
-                                self.voice_female_name,
-                                self.add_voice_female_button,
-                                self.voice_male_name,
-                                self.add_voice_male_button,
+                                ft.Row(controls=[
+                                    self.voice_name, self.voice_gender_ddm
+                                ]),
+                                self.voice_add_button,
                                 self.voices_list
                             ],
                             spacing=10,
@@ -650,17 +660,21 @@ class ConfigScreen(ft.View):
                 )
         self.page.update()
 
-    def add_voice(self, e, gender):
-        name = self.voice_female_name.value.strip() if gender == 'females' else self.voice_male_name.value.strip()
-        if name:
+    def add_voice(self, e, gender, name):
+        if name and gender:
             self.voices[gender].append({"name": name})
             self.update_voices_list()
             self.save_voices()
-            if gender == 'females':
-                self.voice_female_name.value = ""
-            else:
-                self.voice_male_name.value = ""
             self.page.update()
+        else:
+            sb = ft.SnackBar(content=ft.Text("Você deve indicar o nome da voz e escolher seu gênero"), 
+                    duration=6000,
+                    show_close_icon=True 
+                    )
+            self.page.snack_bar = sb
+            self.page.snack_bar.open=True
+            self.page.update()
+
 
     def remove_voice(self, gender, voice):
         if voice in self.voices[gender]:

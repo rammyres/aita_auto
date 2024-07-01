@@ -1,12 +1,24 @@
 {
-    "females":[
-        {"name":"Danielle"},
-        {"name": "Joanna"},
-        {"name": "Ruth"}
+    "females": [
+        {
+            "name": "Danielle"
+        },
+        {
+            "name": "Joanna"
+        },
+        {
+            "name": "Ruth"
+        }
     ],
-    "males":[
-        {"name": "Gregory"},
-        {"name": "Matthew"},
-        {"name": "Stephen"}
+    "males": [
+        {
+            "name": "Gregory"
+        },
+        {
+            "name": "Matthew"
+        },
+        {
+            "name": "Stephen"
+        }
     ]
 }

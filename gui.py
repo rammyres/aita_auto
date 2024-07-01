@@ -9,7 +9,21 @@ from lib.screens.video_screen import VideoView
 from lib.screens.video_list_screen import VideoListView
 from lib.screens.url_post_screen import UrlScreen
 from lib.screens.config_screen import ConfigScreen
-from lib.utils.reddit_utils import check_configs
+# from lib.utils.reddit_utils import check_configs
+
+def gui_check_configs():
+    reddit_config_file = os.path.join(os.getcwd(),'config', 'reddit_config.ini')
+    aai_config_file = os.path.join(os.getcwd(),'config', 'aai.ini')
+    aws_config_file = os.path.join(os.path.expanduser('~'),'.aws', 'credentials')
+    # main_configs_file = os.path.join(os.getcwd(),'config', 'aita_auto.ini')
+
+    _reddit_conf = not os.path.exists(reddit_config_file)
+    _aws_conf = not os.path.exists(aws_config_file)
+    _aai_conf = not os.path.exists(aai_config_file)
+
+    if any([_reddit_conf, _aws_conf, _aai_conf]):
+        return False
+    return True
 
 def main(page: ft.Page):
     page.title = "Aita Auto VideoMaker"
@@ -128,7 +142,7 @@ def main(page: ft.Page):
         page.update()
 
     # Start the app with the home view
-    if not check_configs('gui'):
+    if not gui_check_configs():
         page.go('/config/first')
     else:
         go_home()
