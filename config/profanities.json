@@ -1,4 +1,4 @@
- {
+{
     "fuck": "freak",
     "shit": "poop",
     "shits": "poops",
@@ -17,14 +17,15 @@
     "motherfucker": "motherlover",
     "kill": "unalive",
     "killing": "unaliving",
-    "killed":"unalived",
+    "killed": "unalived",
     "suicide": "self unaliving",
     "sex": "seggs",
     "vagina": "woman part",
     "vaginas": "woman parts",
     "penis": "manhood",
-    "porn":"corn",
+    "porn": "corn",
     "shitty": "crappy",
-    "fucking":"effing",
-    "mum": "mom"
+    "fucking": "effing",
+    "mum": "mom",
+    "death": "unalliving"
 }

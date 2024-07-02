@@ -17,12 +17,14 @@ class PostScreen(ft.View):
         self.title_input = ft.TextField(
             value=self.post_title, 
             label="Titulo",
+            on_change=self.on_title_changed
         )
         
         self.text_input = ft.TextField(
             value=self.post_text, 
             multiline=True, 
-            expand=True
+            expand=True,
+            on_change=self.on_text_changed
         )
 
         self.scrollable_text = ft.Container(
@@ -92,3 +94,11 @@ class PostScreen(ft.View):
             self.gender = "female"
             self.process_button.disabled=False
         self.update()
+
+    def on_title_changed(self, e):
+        self.title_input.value = e.control.value
+        self.page.update()
+
+    def on_text_changed(self, e):
+        self.text_input.value = e.control.value
+        self.page.update()
