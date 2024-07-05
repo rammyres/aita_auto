@@ -88,9 +88,10 @@ class GenerateScreen(ft.View):
         self.processing_narration.toggle_loading(False)
 
     def process_subtitles(self):
-        self.sb_notify("Gerando as legendas")
+        
         self.processing_subtitles.toggle_loading(True)
         for i in range(len(self.text_parts)): 
+            self.sb_notify(f"Gerando a legenda da parte {i+1}")
             _audio_path=os.path.join(self.audio_path, f"__part_{i}__.mp3")
             _subtitle_path= os.path.join(self.subtitles_path, f"__part_{i}.srt")
             generate_subtitles(_audio_path, _subtitle_path)

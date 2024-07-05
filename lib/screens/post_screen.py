@@ -10,9 +10,6 @@ class PostScreen(ft.View):
         self.go_generate = go_generate
         self.post_title = prepare_text(post_title)
         self.post_text = prepare_text(post_text)
-        
-        def finished_text_action(e=None):
-            self.go_generate(f"{self.post_title}|{self.post_text}|{self.gender}")
             
         self.title_input = ft.TextField(
             value=self.post_title, 
@@ -38,7 +35,7 @@ class PostScreen(ft.View):
             color=ft.colors.WHITE,
             style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
             disabled=True,
-            on_click=finished_text_action
+            on_click=self.finished_text_action
         )
         
         self.male_checkbox = ft.Checkbox(label="Masculino", on_change=self.on_checkbox_change)
@@ -74,6 +71,9 @@ class PostScreen(ft.View):
 
     def did_mount(self):
         self.update_gender_text()
+
+    def finished_text_action(self, e=None):
+            self.go_generate(f"{self.title_input.value}|{self.text_input.value}|{self.gender}")
 
     def update_gender_text(self):
         self.suggested_gender = suggest_gender(" ".join([self.post_title, self.post_text]))
