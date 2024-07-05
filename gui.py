@@ -40,7 +40,6 @@ def main(page: ft.Page):
         page.go(f'/postlist/{e}')
 
     def show_post_screen(e=None):
-        print(e)
         title, text = e.split('|', 1)
         page.go(f'/post/{title}/{text}')
 
@@ -68,7 +67,8 @@ def main(page: ft.Page):
                 show_selection=show_selection, 
                 show_video_list=show_video_list,
                 show_url_screen=show_url_screen,
-                show_config_screen=show_config_screen
+                show_config_screen=show_config_screen,
+                show_post=show_post_screen
             ))
         elif page.route == '/selection':
             page.views.append(SelectionScreen(
