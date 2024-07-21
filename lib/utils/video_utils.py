@@ -2,6 +2,7 @@ import moviepy.editor as mp
 from moviepy.video.fx.all import crop
 from moviepy.video.tools.subtitles import SubtitlesClip
 from moviepy.config import change_settings
+
 import os
 
 # Função para adicionar texto ao vídeo
@@ -48,12 +49,12 @@ def split_video(video, total_duration, segment_duration):
     
     return segments
 
-def export_single(video, total_time, output_file):
+def export_single(video, total_time, output_file, logger=None):
     change_settings({"FFMPEG_BINARY":"ffmpeg"})
     start_time = 0 
     output = video.subclip(start_time, total_time)
     output = output.resize(height=1920).resize(width=1080)
-    output.write_videofile(output_file, codec='libx264', fps=24)
+    output.write_videofile(output_file, codec='libx264', fps=24, threads=3, preset='fast', logger=logger)
 
 # Função para formatar vídeo para 9x16
 def format_video_to_9x16(video):

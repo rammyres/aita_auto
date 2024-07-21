@@ -38,7 +38,6 @@ Agora o Aita VideoMaker conta com uma interface gráfica feita
   - nltk
   - playsound
   - praw
-  - pysbd
   - tqdm
   - yt_dlp
 

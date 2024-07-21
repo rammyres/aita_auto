@@ -2,6 +2,7 @@ import uuid
 import os
 import flet as ft
 import moviepy.editor as mp
+from lib.logger import FletProgressBarLogger
 from lib.utils.reddit_utils import *
 from lib.utils.video_utils import *
 from lib.utils.audio_utils import *
@@ -88,9 +89,10 @@ class GenerateScreen(ft.View):
         self.processing_narration.toggle_loading(False)
 
     def process_subtitles(self):
-        self.sb_notify("Gerando as legendas")
+        
         self.processing_subtitles.toggle_loading(True)
         for i in range(len(self.text_parts)): 
+            self.sb_notify(f"Gerando a legenda da parte {i+1}")
             _audio_path=os.path.join(self.audio_path, f"__part_{i}__.mp3")
             _subtitle_path= os.path.join(self.subtitles_path, f"__part_{i}.srt")
             generate_subtitles(_audio_path, _subtitle_path)
@@ -107,10 +109,12 @@ class GenerateScreen(ft.View):
 
     def processing_videos(self):
         bgvideo = mp.VideoFileClip(self.bgvideo)
+        
         output_path = os.path.join("output", str(uuid.uuid4()))
         os.mkdir(output_path)
         for i in range(len(self.text_parts)):
             self.sb_notify(f"Gerando video parte {i+1}")
+            logger = FletProgressBarLogger(update_callback=self.video_cards[i].update_progress)
             self.video_cards[i].toggle_loading(True)
             narration_audio = mp.AudioFileClip(os.path.join(self.audio_path, f"__part_{i}__.mp3")) 
             video_with_audio = bgvideo.set_audio(narration_audio) # Inclui o áudio no video de fundo
@@ -122,7 +126,8 @@ class GenerateScreen(ft.View):
             output_filename = os.path.join(output_path, f"output_part_{i + 1}.mp4")
             export_single(video_with_subtitles, 
                         narration_audio.duration, 
-                        output_filename)
+                        output_filename,
+                        logger=logger)
             self.video_cards[i].update_check(is_complete=True)
             self.video_cards[i].toggle_loading(False)
 
