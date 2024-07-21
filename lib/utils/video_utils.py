@@ -49,7 +49,7 @@ def split_video(video, total_duration, segment_duration):
     
     return segments
 
-def export_single(video, total_time, output_file, logger):
+def export_single(video, total_time, output_file, logger=None):
     change_settings({"FFMPEG_BINARY":"ffmpeg"})
     start_time = 0 
     output = video.subclip(start_time, total_time)

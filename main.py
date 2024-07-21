@@ -123,7 +123,8 @@ def main():
             print_msg(f"Exportando parte {i+1} com {narration_audio.duration:.2f}s")
             export_single(video_with_subtitles, 
                         narration_audio.duration, 
-                        output_filename)
+                        output_filename,
+                        logger='bar')
 
         
         remove_tmp() # Remove arquivos temporários
