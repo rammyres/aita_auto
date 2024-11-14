@@ -59,6 +59,10 @@
         {
             "name": "confessions",
             "description": "Get that nasty secret off your chest or simply use this as a place to vent. See the unfiltered opinions of strangers."
+        },
+        {
+            "name": "BestofRedditorUpdates",
+            "description": "What happened to people who ask reddit for advice or help?** Did they take Reddit's advice? How did it turn out? Read the best updates by redditors and find out what happened after their original post."
         }
     ]
 }
