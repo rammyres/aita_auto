@@ -4,9 +4,6 @@ config/aai.ini
 output
 __pycache__/
 tmp/
-bin/
-lib64/
-pyvenv.cfg
-lib/python3.12
+.venv
 
 output_part_2TEMP_MPY_wvf_snd.mp3
