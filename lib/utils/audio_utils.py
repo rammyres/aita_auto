@@ -1,6 +1,7 @@
 import json, boto3, random, os
 import moviepy.editor as mp
-from playsound import playsound
+from pydub import AudioSegment
+from pydub.playback import play
 from lxml import etree
 from lib.utils.reddit_utils import convert_to_ssml
 
@@ -95,4 +96,5 @@ def text_to_speech(text, filename, voice, language_code, output_format='mp3', en
     print(f'Narração salva em "{filename}"')
 
 def notify():
-    playsound('assets/audio/notification.mp3')
+    sound = AudioSegment.from_mp3('assets/audio/notification.mp3')  # Carrega o arquivo MP3
+    play(sound)  # Reproduz o áudio
