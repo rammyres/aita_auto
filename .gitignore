@@ -7,3 +7,9 @@ tmp/
 .venv/
 
 output_part_2TEMP_MPY_wvf_snd.mp3
+.venv/bin/activate
+.venv/pyvenv.cfg
+.venv/bin/activate.csh
+.venv/bin/activate.fish
+.venv/bin/pip
+.venv/bin/pip3

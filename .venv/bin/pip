@@ -1,4 +1,4 @@
-#!/home/rammyres/Code/aita_auto/.venv/bin/python
+#!/home/rammyres/code/aita_auto/.venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys
