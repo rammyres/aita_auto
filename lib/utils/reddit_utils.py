@@ -1,9 +1,20 @@
-import praw, json, re, random, nltk
+import nltk
+import os
+import praw
+import re
+import json
+import random
+import pysbd
 from lib.utils.config_utils import *
 from tqdm import tqdm
 from mysutils.text import remove_urls
 from nltk.tokenize import word_tokenize, sent_tokenize
-import pysbd
+
+nltk_data = os.path.expanduser('~') + '/nltk_data'
+nltk.download('punkt', download_dir=nltk_data)
+nltk.download('punkt_tab', download_dir=nltk_data)
+nltk.data.path.append(nltk_data)
+                                 
 
 # Estima o tempo da narração
 def estimate_time(text):
@@ -44,7 +55,6 @@ def merge_accidental_splits(text):
 
 # Divide o tempo em segmentos para narração
 def split_paragraphs(text, number_of_parts):
-    nltk.download('punkt')
     # Verifica se o texto contém o divisor '* *'
     if '* *' in text:
         paragraphs = text.split('* *')  # Divide o texto em parágrafos

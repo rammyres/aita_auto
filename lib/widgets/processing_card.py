@@ -1,6 +1,6 @@
 import flet as ft
 
-class ProcessingCard(ft.UserControl):
+class ProcessingCard(ft.Container):
     def __init__(self, text):
         super().__init__()
         self.text = text
@@ -10,23 +10,19 @@ class ProcessingCard(ft.UserControl):
         self.progress_ring = ft.ProgressRing(visible=False, width=20, height=20)
 
         self.row = ft.Row(
-                    controls=[
-                        self.check_icon,
-                        self.label,
-                    ],
-                    alignment=ft.MainAxisAlignment.START
-                )
-
-    def build(self):
-        return ft.Card(
-            content=ft.Container(
-                content=self.row,
-                padding=10,
-                border_radius=15,
-                bgcolor=ft.colors.WHITE
-            ),
-            margin=10
+            controls=[
+                self.check_icon,
+                self.label,
+            ],
+            alignment=ft.MainAxisAlignment.START
         )
+
+        # Configurações do Container
+        self.content = self.row
+        self.padding = 10
+        self.border_radius = 15
+        self.bgcolor = ft.colors.WHITE
+        self.margin = 10
 
     def update_check(self, is_complete):
         self.check_icon.color = ft.colors.GREEN if is_complete else ft.colors.GREY
@@ -35,13 +31,16 @@ class ProcessingCard(ft.UserControl):
     def toggle_loading(self, is_loading):
         if is_loading:
             if self.label.value.startswith("Video"):
-                self.row.controls.append(self.progress_bar)
+                if self.progress_bar not in self.row.controls:
+                    self.row.controls.append(self.progress_bar)
             else:
-                self.row.controls.append(self.progress_ring)
+                if self.progress_ring not in self.row.controls:
+                    self.row.controls.append(self.progress_ring)
                 self.progress_ring.visible = is_loading
         else:
             if self.label.value.startswith("Video"):
-                self.row.controls.remove(self.progress_bar)
+                if self.progress_bar in self.row.controls:
+                    self.row.controls.remove(self.progress_bar)
             else:
                 self.progress_ring.visible = is_loading
         self.update()
